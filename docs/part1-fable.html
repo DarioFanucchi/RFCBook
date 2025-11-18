@@ -301,18 +301,18 @@ Attaching package: 'tsibble'</code></pre>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tsibble: 730 x 2 [1D]
-   date            y
-   &lt;date&gt;      &lt;dbl&gt;
- 1 2020-01-01 -0.130
- 2 2020-01-02  0.782
- 3 2020-01-03  1.26 
- 4 2020-01-04  0.504
- 5 2020-01-05 -0.164
- 6 2020-01-06 -0.744
- 7 2020-01-07 -0.447
- 8 2020-01-08  0.560
- 9 2020-01-09  1.04 
-10 2020-01-10  1.39 
+   date             y
+   &lt;date&gt;       &lt;dbl&gt;
+ 1 2020-01-01  0.0574
+ 2 2020-01-02  1.08  
+ 3 2020-01-03  1.27  
+ 4 2020-01-04  0.756 
+ 5 2020-01-05  0.155 
+ 6 2020-01-06 -0.730 
+ 7 2020-01-07 -0.363 
+ 8 2020-01-08  0.601 
+ 9 2020-01-09  1.54  
+10 2020-01-10  1.75  
 # ℹ 720 more rows</code></pre>
 </div>
 </div>
@@ -399,15 +399,15 @@ Attaching package: 'tsibble'</code></pre>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_arima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: y 
-Model: ARIMA(1,0,4)(1,1,0)[7] 
+Model: ARIMA(1,0,2)(1,1,0)[7] 
 
 Coefficients:
-         ar1      ma1     ma2     ma3     ma4     sar1
-      0.8260  -0.3492  0.0939  0.2600  0.1992  -0.3931
-s.e.  0.0306   0.0411  0.0424  0.0518  0.0369   0.0377
+         ar1      ma1     ma2     sar1
+      0.8962  -0.4242  0.2213  -0.3985
+s.e.  0.0188   0.0470  0.0362   0.0354
 
-sigma^2 estimated as 0.09468:  log likelihood=-172.45
-AIC=358.89   AICc=359.05   BIC=390.98</code></pre>
+sigma^2 estimated as 0.1051:  log likelihood=-210.47
+AIC=430.94   AICc=431.02   BIC=453.85</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit_arima <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -463,19 +463,19 @@ AIC=358.89   AICc=359.05   BIC=390.98</code></pre>
 <pre><code>Series: y 
 Model: ETS(A,N,A) 
   Smoothing parameters:
-    alpha = 0.6395463 
-    gamma = 0.0001000038 
+    alpha = 0.6198904 
+    gamma = 0.0001000053 
 
   Initial states:
-       l[0]       s[0]      s[-1]      s[-2]     s[-3]     s[-4]     s[-5]
- -0.0114026 -0.7650761 -0.9659091 -0.4599261 0.4344447 0.9743978 0.7655191
-      s[-6]
- 0.01654963
+      l[0]       s[0]      s[-1]      s[-2]     s[-3]     s[-4]     s[-5]
+ 0.1531248 -0.7472373 -0.9889816 -0.4483226 0.4464209 0.9695725 0.7837188
+       s[-6]
+ -0.01517067
 
-  sigma^2:  0.0666
+  sigma^2:  0.0697
 
      AIC     AICc      BIC 
-2845.837 2846.143 2891.767 </code></pre>
+2879.641 2879.947 2925.572 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fit_ets <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -656,15 +656,15 @@ Attaching package: 'dplyr'</code></pre>
 <span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_arimax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: y 
-Model: LM w/ ARIMA(1,0,4)(1,1,0)[7] errors 
+Model: LM w/ ARIMA(1,0,2)(1,1,0)[7] errors 
 
 Coefficients:
-         ar1      ma1     ma2     ma3     ma4     sar1   promo
-      0.8283  -0.3495  0.0921  0.2559  0.1965  -0.3927  0.0223
-s.e.  0.0302   0.0410  0.0427  0.0519  0.0367   0.0376  0.0247
+         ar1      ma1     ma2     sar1   promo
+      0.8964  -0.4248  0.2214  -0.3990  0.0086
+s.e.  0.0188   0.0471  0.0363   0.0354  0.0286
 
-sigma^2 estimated as 0.09471:  log likelihood=-172.04
-AIC=360.07   AICc=360.27   BIC=396.74</code></pre>
+sigma^2 estimated as 0.1052:  log likelihood=-210.42
+AIC=432.85   AICc=432.96   BIC=460.35</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>future_x <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="fu">seq.Date</span>(<span class="fu">max</span>(data<span class="sc">$</span>date) <span class="sc">+</span> <span class="dv">1</span>, <span class="at">by =</span> <span class="st">"day"</span>, <span class="at">length.out =</span> <span class="dv">30</span>),</span>
@@ -849,7 +849,7 @@ AIC=360.07   AICc=360.27   BIC=396.74</code></pre>
 <pre><code># A tibble: 1 × 10
   .model .type    ME  RMSE   MAE   MPE  MAPE  MASE RMSSE  ACF1
   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1 arima  Test  0.532 0.696 0.584 -16.0  238.  1.26  1.27 0.701</code></pre>
+1 arima  Test  0.427 0.691 0.563  32.1  294.  1.19  1.25 0.733</code></pre>
 </div>
 </div>
 <p>Each row of the stretched tsibble represents one training window; <code>forecast(h = 30)</code> produces 30–day–ahead forecasts for that window.</p>
