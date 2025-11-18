@@ -14,6 +14,7 @@ You can generate time–based features directly, without recipes:
 
 ```{r}
 require(dplyr, quietly = TRUE)
+require(ggplot2, quietly = TRUE)
 time_series_split <- timetk::time_series_split
 time_series_cv <- timetk::time_series_cv
 
@@ -69,15 +70,25 @@ cv_plan <- time_series_cv(
   cumulative = TRUE
 )
 
-cv_plan %>%
+cv_plan_tbl <- cv_plan %>%
   timetk::tk_time_series_cv_plan() %>%
-  timetk::plot_time_series_cv_plan(
-    .date_var = date,
-    .value    = y
-  )
+  mutate(slice = factor(.id, levels = rev(unique(.id))))
+
+ggplot(cv_plan_tbl, aes(x = date, y = slice, fill = .key)) +
+  geom_tile(height = 0.6, colour = "white") +
+  scale_fill_manual(values = c(training = "#2b8cbe", testing = "#f03b20")) +
+  labs(
+    title = "Rolling CV plan: train (blue) vs assessment (orange)",
+    x = "Date",
+    y = "Slice",
+    fill = NULL
+  ) +
+  hiplot::theme_isazi(12)
 ```
 
 This allows you to inspect your rolling window splits visually and confirm they make sense.
+
+Blue blocks show the expanding training windows while orange shows the held-out horizon; scan horizontally to confirm the assessment windows march forward without gaps or overlaps.
 
 ---
 
@@ -86,6 +97,8 @@ This allows you to inspect your rolling window splits visually and confirm they 
 **Motivation**
 
 In retail, static seasonality is the easy part. The interesting dynamics come from promotions, pricing, and interactions across products (cannibalisation). We look at classical (fable) and ML (modeltime) approaches.
+
+We first introduced single-series promo modelling with ARIMAX in Part I, and Part II showed how to fold the same drivers into global ML models. Here we extend those ideas with richer features and cross-series context.
 
 ## ARIMAX in fable for promo & price
 
@@ -112,6 +125,27 @@ Interpretation:
 - Coefficient on `price` ≈ price elasticity (units per price unit); often negative.
 
 You can add lags and interactions, e.g. `promo + lag(promo) + price + promo:holiday_flag`.
+
+```{r, fig.cap="Promo periods (orange) sit well above the fitted baseline, showing clean incremental lift."}
+fit_arimax %>%
+  fabletools::augment() %>%
+  dplyr::left_join(data_retail %>% dplyr::select(date, promo), by = "date") %>%
+  mutate(promo_flag = if_else(promo == 1, "Promo", "Non-promo")) %>%
+  ggplot(aes(x = date)) +
+  geom_line(aes(y = sales), colour = "grey70") +
+  geom_line(aes(y = .fitted), colour = "#2c7fb8", linewidth = 0.6) +
+  geom_point(aes(y = sales, colour = promo_flag), alpha = 0.7, size = 1.1) +
+  scale_colour_manual(values = c("Promo" = "#d95f02", "Non-promo" = "#1b9e77")) +
+  labs(
+    title = "Promo vs non-promo fit diagnostics",
+    x = "Date",
+    y = "Sales",
+    colour = NULL
+  ) +
+  hiplot::theme_isazi(12)
+```
+
+If the promo dots mingle with the baseline, consider adding lagged promos or interaction terms (promo × season) before discarding the regressor.
 
 ## ML global model for promos & price
 
@@ -153,6 +187,17 @@ For cannibalisation, you precompute features such as:
 - `competitor_price`
 
 via group–by / lag operations, then feed into the recipe.
+
+```{r, fig.cap="Global XGBoost importance shows which levers the model leaned on first."}
+require(vip, quietly = TRUE)
+
+fit_promos %>%
+  workflows::pull_workflow_fit() %>%
+  vip::vip(num_features = 10, geom = "col") +
+  hiplot::theme_isazi(12)
+```
+
+Promo and price should dominate; if only date-derived factors appear, revisit how you encoded the commercial drivers.
 
 ---
 
@@ -215,6 +260,24 @@ Use group–by / summarise to compute, for each date and category:
 - `top_brand_share`  
 
 Then join back to the main table and feed into your recipe.
+
+```{r}
+cross_feats <- data_panel %>%
+  mutate(category = if_else(sku %in% letters[1:10], "A", "B")) %>%
+  group_by(date, category) %>%
+  mutate(
+    category_sales = sum(sales),
+    category_sales_ex_sku = category_sales - sales
+  ) %>%
+  ungroup()
+
+cross_feats %>%
+  select(sku, date, sales, category, category_sales_ex_sku) %>%
+  arrange(sku, date) %>%
+  head()
+```
+
+This pattern lets each SKU know the scale of its peers, unlocking cannibalisation or halo effects for downstream models.
 
 ---
 

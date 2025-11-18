@@ -110,6 +110,8 @@ h2o_fc %>%
   )
 ```
 
+Confirm the teal forecast sticks close to the orange truth without obvious look-ahead artefacts; if the line hugs every spike perfectly, double-check your feature construction for leakage.
+
 ---
 
 # What H2O AutoML is doing under the hood

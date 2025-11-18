@@ -18,6 +18,7 @@ require(feasts, quietly = TRUE)
 require(fable, quietly = TRUE)
 require(fabletools, quietly = TRUE)
 require(ggplot2, quietly = TRUE)
+require(dplyr, quietly = TRUE)
 
 
 data <- tsibble(
@@ -39,6 +40,8 @@ autoplot(data, y) +
     y = "y"
   ) + hiplot::theme_isazi(12)
 ```
+
+Weekly pulses sit on top of a slower monthly undulation—use the plot to confirm the simulated data actually contains the structure you plan to model.
 
 ---
 
@@ -72,6 +75,18 @@ baseline_fc %>%
   ) + hiplot::theme_isazi(12)
 ```
 
+The naive and seasonal–naive tracks hug the recent history while the simple mean quickly flattens—if even these baselines miss badly, you know the issue sits with the data rather than your fancy model.
+
+```{r}
+baseline_metrics <- accuracy(baseline_fc, data)
+
+baseline_metrics %>%
+  select(.model, RMSE, MAE, MASE) %>%
+  knitr::kable(digits = 3)
+```
+
+RMSE highlights absolute scale, MAE is a more robust version, and MASE compares against the seasonal naive (so MASE ≈ 1 means you are matching that baseline). These numbers give you a quick sanity check before trying heavier models.
+
 ---
 
 # ARIMA
@@ -101,6 +116,8 @@ fit_arima %>%
 
 `ARIMA()` automatically identifies appropriate orders (including seasonal). `report()` gives you parameter estimates and diagnostics.
 
+Check whether the intervals expand meaningfully and that residual autocorrelation (reported by `report()`) is small; otherwise revisit differencing or seasonal order.
+
 ---
 
 # ETS (Exponential Smoothing)
@@ -114,10 +131,17 @@ fit_ets <- data %>%
   model(ets = ETS(y))
 
 fit_ets %>% report()
-fit_ets %>% forecast(h = "30 days")
+fit_ets %>% forecast(h = "30 days") %>% autoplot(data) +
+  labs(
+    title = "ETS vs history",
+    x = "Date",
+    y = "y"
+  ) + hiplot::theme_isazi(12)
 ```
 
 ETS models are often a strong alternative to ARIMA when seasonal patterns are stable and the noise structure is well described by exponential smoothing.
+
+Look for whether ETS captures a smooth mean-reverting seasonal pattern—if the fitted components look jagged the error structure probably needs tweaking.
 
 ---
 
@@ -156,6 +180,8 @@ data %>%
   labs(title = "STL components for the toy series") + 
   hiplot::theme_isazi(12)
 ```
+
+Focus on whether STL isolates interpretable seasonal components—flat or noisy seasonal panels often mean the period/window choices need adjustment.
 
 ---
 
@@ -222,6 +248,8 @@ multi_stl_components %>%
   labs(title = "Weekly, monthly, and annual components via STL")
 ```
 
+All three seasonal panels show smooth oscillations, confirming the multiple-period STL successfully peeled apart the weekly, monthly, and annual effects before modelling the remainder.
+
 # ARIMAX: regression with ARIMA errors
 
 **Motivation**
@@ -231,17 +259,29 @@ Most real–world forecasting problems need exogenous drivers: price, promotions
 ```{r}
 require(dplyr, quietly = TRUE)
 
-data_x <- data %>%
-  mutate(promo = rbinom(n(), 1, 0.1))
+set.seed(42)
+
+data_x <- tsibble(
+  date  = as.Date("2020-01-01") + 0:729,
+  promo = rbinom(730, 1, 0.15),
+  price = runif(730, 9, 12),
+  index = date
+) %>%
+  mutate(
+    baseline = sin(2 * pi * (0:729) / 7) + 0.5 * sin(2 * pi * (0:729) / 30.5),
+    y = baseline + 1.5 * promo - 0.9 * (price - 10.5) + rnorm(730, 0, 0.2)
+  ) %>%
+  select(-baseline)
 
 fit_arimax <- data_x %>%
-  model(arimax = ARIMA(y ~ promo))
+  model(arimax = ARIMA(y ~ promo + price))
 
 report(fit_arimax)
 
 future_x <- tsibble(
-  date  = seq.Date(max(data$date) + 1, by = "day", length.out = 30),
+  date  = seq.Date(max(data_x$date) + 1, by = "day", length.out = 30),
   promo = 0,
+  price = 10.5,
   index = date
 )
 
@@ -253,6 +293,39 @@ fit_arimax %>%
 - The ARIMA error structure accounts for remaining autocorrelation.
 
 You can add more regressors (price, other features) in the same way.
+
+```{r}
+tidy(fit_arimax) %>%
+  select(term, estimate) %>%
+  knitr::kable(digits = 3)
+```
+
+The `promo` coefficient is positive (~1.5 units uplift) while the `price` coefficient is negative—both align with how we simulated the impact.
+
+```{r, fig.cap="Promo days lift the fitted baseline relative to non-promo periods."}
+fit_arimax %>%
+  augment() %>%
+  left_join(data_x %>% select(date, promo), by = "date") %>%
+  mutate(
+    promo_flag = if_else(promo == 1, "Promo", "Non-promo")
+  ) %>%
+  ggplot(aes(x = date)) +
+  geom_line(aes(y = y), colour = "grey70") +
+  geom_line(aes(y = .fitted), colour = "#2c7fb8", linewidth = 0.6) +
+  geom_point(aes(y = y, colour = promo_flag), alpha = 0.7, size = 1.1) +
+  scale_colour_manual(values = c("Promo" = "#d95f02", "Non-promo" = "#1b9e77")) +
+  labs(
+    title = "Promo uplift relative to fitted baseline",
+    x = "Date",
+    y = "Sales",
+    colour = NULL
+  ) +
+  hiplot::theme_isazi(12)
+```
+
+Promo dots consistently sit above the fitted line, while non-promo points cluster around it—if colours overlap heavily, revisit the regressor definition or consider lagged promo terms.
+
+Prefer classical ARIMAX when you need interpretable coefficients; for ML/global treatments of promotions, see Part II (“Exogenous regressors”) and the dedicated promotions chapter in Part III.
 
 ---
 
@@ -279,6 +352,30 @@ fit_multi %>%
 ```
 
 Each key (`id`) gets its own ARIMA model. You can still summarise accuracy and forecasts across all keys.
+
+Use `accuracy(fit_multi)` or `glance()` to spot outlier SKUs where the model struggles—keyed workflows make it straightforward to drill down.
+
+```{r, fig.cap="Visualising a few keyed series makes it obvious when one behaves differently."}
+data_multi %>%
+  filter(id %in% letters[1:3]) %>%
+  autoplot(y) +
+  facet_wrap(vars(id), scales = "free_y") +
+  labs(
+    title = "Sample keyed series (ids a–c)",
+    x = "Date",
+    y = "y"
+  ) +
+  hiplot::theme_isazi(12)
+```
+
+```{r}
+fit_multi %>%
+  accuracy() %>%
+  select(id, .model, RMSE, MASE) %>%
+  knitr::kable(digits = 3)
+```
+
+Look for IDs where MASE jumps relative to others—they are prime candidates for bespoke modelling or feature engineering.
 
 ---
 
@@ -372,6 +469,8 @@ fc %>%
   hiplot::theme_isazi(12)
 ```
 
+Bottom-up coherence forces the reconciled line (orange) to track the aggregate closely; if the adjustment is too aggressive, try MinT with shrinkage to balance bottom vs top accuracy.
+
 ---
 
 # Rolling–origin evaluation (tscv)
@@ -388,10 +487,43 @@ cv_results <- cv %>%
   model(arima = ARIMA(y)) %>%
   forecast(h = 30)
 
-accuracy(cv_results, data)
+cv_plot <- cv_results %>%
+  filter(.model == "arima") %>%
+  as_tibble() %>%
+  mutate(window = factor(.id)) %>%
+  ggplot(aes(x = date, y = .mean, colour = window, group = window)) +
+  geom_line(alpha = 0.7) +
+  geom_line(
+    data = as_tibble(data),
+    aes(x = date, y = y),
+    inherit.aes = FALSE,
+    colour = "black",
+    linewidth = 0.4
+  ) +
+  labs(
+    title = "Rolling-origin evaluation windows",
+    subtitle = "Coloured lines = individual origins; black = full history",
+    x = "Date",
+    y = "Forecast"
+  ) +
+  guides(colour = "none")
+
+cv_accuracy <- accuracy(cv_results, data)
+```
+
+```{r, fig.cap="Expanding windows ensure every 30-day holdout is evaluated in order."}
+cv_plot + hiplot::theme_isazi(12)
 ```
 
 Each row of the stretched tsibble represents one training window; `forecast(h = 30)` produces 30–day–ahead forecasts for that window.
+
+```{r}
+cv_accuracy %>%
+  select(.model, .type, RMSE, MAE, MASE) %>%
+  knitr::kable(digits = 3)
+```
+
+MASE close to 1 signals parity with the in-sample seasonal naive—if it balloons across origins, increase the initial window or revisit your preprocessing.
 
 ---
 
@@ -419,3 +551,5 @@ combo %>%
 ```
 
 You can also use regression–based combinations or more sophisticated weighting schemes via `regress_combination()` in fabletools.
+
+Averaging typically shrinks extremes and stabilises intervals; check whether the combined trajectory reduces variance relative to the single-model paths before investing in more elaborate stacking.

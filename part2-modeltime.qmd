@@ -91,6 +91,8 @@ xgb_fc %>%
   )
 ```
 
+Look for systematic under/over prediction across the holdout—if the orange forecast line consistently lags the truth, feed more lags or external drivers before chasing hyperparameters.
+
 ---
 
 # Adding a classical ARIMA baseline
@@ -115,12 +117,29 @@ model_tbl <- modeltime::modeltime_table(
   fit_arima
 )
 
-model_tbl %>%
+accuracy_tbl <- model_tbl %>%
   modeltime::modeltime_calibrate(rsample::testing(splits)) %>%
   modeltime::modeltime_accuracy()
+
+accuracy_tbl
+```
+
+```{r, fig.cap="ARIMA offers a sturdy baseline; XGBoost wins only if the engineered features add signal."}
+accuracy_tbl %>%
+  ggplot2::ggplot(ggplot2::aes(x = reorder(.model_desc, rmse), y = rmse)) +
+  ggplot2::geom_col(fill = "#3182bd") +
+  ggplot2::coord_flip() +
+  ggplot2::labs(
+    x = NULL,
+    y = "RMSE",
+    title = "Holdout accuracy by model"
+  ) +
+  hiplot::theme_isazi(12)
 ```
 
 You now have side–by–side accuracy for ML and classical methods.
+
+Even if RMSE numbers look close, the bar plot highlights whether the ML lift is material enough to justify the extra complexity.
 
 ---
 
@@ -166,6 +185,23 @@ fit_xgb_x <- workflows::fit(wf_xgb_x, rsample::training(splits_x))
 ```
 
 You can interpret feature importance with packages like `vip`, `DALEX`, or `iml`.
+
+Use this when you want flexible, global promo/price effects; if you need per-series coefficients, see the ARIMAX treatment in Part I, and for cross-series engineered drivers jump ahead to Part III.
+
+```{r, fig.cap="Promo + price features bend the forecast line upward when uplift signals appear in the training data."}
+modeltime::modeltime_table(fit_xgb_x) %>%
+  modeltime::modeltime_calibrate(rsample::testing(splits_x)) %>%
+  modeltime::modeltime_forecast(
+    new_data    = rsample::testing(splits_x),
+    actual_data = data_x
+  ) %>%
+  modeltime::plot_modeltime_forecast(
+    .title = "Holdout forecast with promo/price features",
+    .legend_max_width = 24
+  )
+```
+
+Notice whether spikes during promo periods are now captured; if not, increase lag depth or add richer promo descriptors.
 
 ---
 
@@ -236,6 +272,8 @@ ensemble_fc %>%
 ```
 
 You can also use weighted ensembles or meta–learners via `stacks`.
+
+The blended line often inherits the best bits of each contributor; if it still wobbles, inspect residual correlations to design smarter weighting schemes.
 
 ---
 
