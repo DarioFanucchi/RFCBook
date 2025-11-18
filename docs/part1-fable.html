@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -69,15 +69,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-27c261d06b905028a18691de25d09dde.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-485d01fc63b59abcd3ee1bf1e8e2748d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -120,7 +119,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -165,7 +164,6 @@ window.Quarto = {
       <a href="./">Practical Forecasting in R with fable &amp; modeltime</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/DarioFanucchi/RFCBook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./Practical-Forecasting-in-R-with-fable---modeltime.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -216,20 +214,21 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#time-series-as-tsibbles" id="toc-time-series-as-tsibbles" class="nav-link active" data-scroll-target="#time-series-as-tsibbles"><span class="header-section-number">3</span> 1. Time series as tsibbles</a></li>
-  <li><a href="#baseline-forecasts-mean-naive-seasonal-naive" id="toc-baseline-forecasts-mean-naive-seasonal-naive" class="nav-link" data-scroll-target="#baseline-forecasts-mean-naive-seasonal-naive"><span class="header-section-number">4</span> 2. Baseline forecasts: mean, naive, seasonal naive</a></li>
-  <li><a href="#arima" id="toc-arima" class="nav-link" data-scroll-target="#arima"><span class="header-section-number">5</span> 3. ARIMA</a></li>
-  <li><a href="#ets-exponential-smoothing" id="toc-ets-exponential-smoothing" class="nav-link" data-scroll-target="#ets-exponential-smoothing"><span class="header-section-number">6</span> 4. ETS (Exponential Smoothing)</a></li>
-  <li><a href="#stl-ets-decompositionbased-forecasting" id="toc-stl-ets-decompositionbased-forecasting" class="nav-link" data-scroll-target="#stl-ets-decompositionbased-forecasting"><span class="header-section-number">7</span> 5. STL + ETS (decomposition–based forecasting)</a></li>
-  <li><a href="#arimax-regression-with-arima-errors" id="toc-arimax-regression-with-arima-errors" class="nav-link" data-scroll-target="#arimax-regression-with-arima-errors"><span class="header-section-number">8</span> 6. ARIMAX: regression with ARIMA errors</a></li>
-  <li><a href="#multiple-series-with-keys" id="toc-multiple-series-with-keys" class="nav-link" data-scroll-target="#multiple-series-with-keys"><span class="header-section-number">9</span> 7. Multiple series with keys</a></li>
-  <li><a href="#hierarchies-reconciliation-including-mint" id="toc-hierarchies-reconciliation-including-mint" class="nav-link" data-scroll-target="#hierarchies-reconciliation-including-mint"><span class="header-section-number">10</span> 8. Hierarchies &amp; reconciliation (including MinT)</a>
+  <li><a href="#time-series-as-tsibbles" id="toc-time-series-as-tsibbles" class="nav-link active" data-scroll-target="#time-series-as-tsibbles"><span class="header-section-number">3</span> Time series as tsibbles</a></li>
+  <li><a href="#baseline-forecasts-mean-naive-seasonal-naive" id="toc-baseline-forecasts-mean-naive-seasonal-naive" class="nav-link" data-scroll-target="#baseline-forecasts-mean-naive-seasonal-naive"><span class="header-section-number">4</span> Baseline forecasts: mean, naive, seasonal naive</a></li>
+  <li><a href="#arima" id="toc-arima" class="nav-link" data-scroll-target="#arima"><span class="header-section-number">5</span> ARIMA</a></li>
+  <li><a href="#ets-exponential-smoothing" id="toc-ets-exponential-smoothing" class="nav-link" data-scroll-target="#ets-exponential-smoothing"><span class="header-section-number">6</span> ETS (Exponential Smoothing)</a></li>
+  <li><a href="#stl-ets-decompositionbased-forecasting" id="toc-stl-ets-decompositionbased-forecasting" class="nav-link" data-scroll-target="#stl-ets-decompositionbased-forecasting"><span class="header-section-number">7</span> STL + ETS (decomposition–based forecasting)</a></li>
+  <li><a href="#double-seasonality" id="toc-double-seasonality" class="nav-link" data-scroll-target="#double-seasonality"><span class="header-section-number">8</span> Double seasonality</a></li>
+  <li><a href="#arimax-regression-with-arima-errors" id="toc-arimax-regression-with-arima-errors" class="nav-link" data-scroll-target="#arimax-regression-with-arima-errors"><span class="header-section-number">9</span> ARIMAX: regression with ARIMA errors</a></li>
+  <li><a href="#multiple-series-with-keys" id="toc-multiple-series-with-keys" class="nav-link" data-scroll-target="#multiple-series-with-keys"><span class="header-section-number">10</span> Multiple series with keys</a></li>
+  <li><a href="#hierarchies-reconciliation-including-mint" id="toc-hierarchies-reconciliation-including-mint" class="nav-link" data-scroll-target="#hierarchies-reconciliation-including-mint"><span class="header-section-number">11</span> Hierarchies &amp; reconciliation (including MinT)</a>
   <ul class="collapse">
-  <li><a href="#conceptual-view" id="toc-conceptual-view" class="nav-link" data-scroll-target="#conceptual-view"><span class="header-section-number">10.1</span> 8.1 Conceptual view</a></li>
-  <li><a href="#using-reconciliation-in-fable" id="toc-using-reconciliation-in-fable" class="nav-link" data-scroll-target="#using-reconciliation-in-fable"><span class="header-section-number">10.2</span> 8.2 Using reconciliation in fable</a></li>
+  <li><a href="#conceptual-view" id="toc-conceptual-view" class="nav-link" data-scroll-target="#conceptual-view"><span class="header-section-number">11.1</span> Conceptual view</a></li>
+  <li><a href="#using-reconciliation-in-fable" id="toc-using-reconciliation-in-fable" class="nav-link" data-scroll-target="#using-reconciliation-in-fable"><span class="header-section-number">11.2</span> Using reconciliation in fable</a></li>
   </ul></li>
-  <li><a href="#rollingorigin-evaluation-tscv" id="toc-rollingorigin-evaluation-tscv" class="nav-link" data-scroll-target="#rollingorigin-evaluation-tscv"><span class="header-section-number">11</span> 9. Rolling–origin evaluation (tscv)</a></li>
-  <li><a href="#combining-forecasts" id="toc-combining-forecasts" class="nav-link" data-scroll-target="#combining-forecasts"><span class="header-section-number">12</span> 10. Combining forecasts</a></li>
+  <li><a href="#rollingorigin-evaluation-tscv" id="toc-rollingorigin-evaluation-tscv" class="nav-link" data-scroll-target="#rollingorigin-evaluation-tscv"><span class="header-section-number">12</span> Rolling–origin evaluation (tscv)</a></li>
+  <li><a href="#combining-forecasts" id="toc-combining-forecasts" class="nav-link" data-scroll-target="#combining-forecasts"><span class="header-section-number">13</span> Combining forecasts</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/DarioFanucchi/RFCBook/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/DarioFanucchi/RFCBook/blob/main/part1-fable.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
     </div>
@@ -255,101 +254,445 @@ window.Quarto = {
 </header>
 
 
+<p>This part of the book covers forecasting with traditional statistical methods. A great book covering these topics in depth is <a href="https://otexts.com/fpp3/" title="Hyndman Forecasting Book">Forecasting: Principles and Practice</a> by Rob Hyndman.</p>
 <section id="time-series-as-tsibbles" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> 1. Time series as tsibbles</h1>
+<h1 data-number="3"><span class="header-section-number">3</span> Time series as tsibbles</h1>
 <p><strong>Motivation</strong></p>
 <p>The fable ecosystem is built around the <code>tsibble</code> class: a tidy time–series structure with an explicit time index and (optionally) one or more keys. If your data is not in a tsibble, everything else becomes awkward.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(feasts)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fable)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="fu">as.Date</span>(<span class="st">"2020-01-01"</span>) <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">y     =</span> <span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>)<span class="sc">/</span><span class="dv">7</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">730</span>, <span class="dv">0</span>, <span class="fl">0.2</span>),</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> date</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">require</span>(generics, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'generics'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">require</span>(tsibble, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'tsibble':
+  method               from 
+  as_tibble.grouped_df dplyr</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'tsibble'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(feasts, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(fable, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(fabletools, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(ggplot2, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="fu">as.Date</span>(<span class="st">"2020-01-01"</span>) <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">y     =</span> <span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>)<span class="sc">/</span><span class="dv">7</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">730</span>, <span class="dv">0</span>, <span class="fl">0.2</span>), <span class="co"># Sample data with weekly trend</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> date</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tsibble: 730 x 2 [1D]
+   date             y
+   &lt;date&gt;       &lt;dbl&gt;
+ 1 2020-01-01 -0.0317
+ 2 2020-01-02  0.815 
+ 3 2020-01-03  1.23  
+ 4 2020-01-04  0.287 
+ 5 2020-01-05 -0.747 
+ 6 2020-01-06 -1.13  
+ 7 2020-01-07 -0.747 
+ 8 2020-01-08  0.0506
+ 9 2020-01-09  0.693 
+10 2020-01-10  0.877 
+# ℹ 720 more rows</code></pre>
+</div>
+</div>
 <p>You now have a single daily series with 730 observations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(data, y) <span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Toy demand signal"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"y"</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> hiplot<span class="sc">::</span><span class="fu">theme_isazi</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="part1-fable_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Simulated daily series showing weekly seasonality.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="baseline-forecasts-mean-naive-seasonal-naive" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> 2. Baseline forecasts: mean, naive, seasonal naive</h1>
+<h1 data-number="4"><span class="header-section-number">4</span> Baseline forecasts: mean, naive, seasonal naive</h1>
 <p><strong>Motivation</strong></p>
 <p>Good baselines are essential. Mean, naive, and seasonal–naive are trivial to compute but surprisingly hard to beat on some data. They also give you quick sanity checks.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(y),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(y),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(y)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>baseline_fc <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(y),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(y),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(y)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>baseline_fc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A fable: 90 x 4 [1D]
+# Key:     .model [3]
+   .model date      
+   &lt;chr&gt;  &lt;date&gt;    
+ 1 mean   2021-12-31
+ 2 mean   2022-01-01
+ 3 mean   2022-01-02
+ 4 mean   2022-01-03
+ 5 mean   2022-01-04
+ 6 mean   2022-01-05
+ 7 mean   2022-01-06
+ 8 mean   2022-01-07
+ 9 mean   2022-01-08
+10 mean   2022-01-09
+# ℹ 80 more rows
+# ℹ 2 more variables: y &lt;dist&gt;, .mean &lt;dbl&gt;</code></pre>
+</div>
+</div>
 <p>Each model returns a fable; you can bind, plot, and calculate accuracy with the same tools.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>baseline_fc <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(data) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mean, naive, and seasonal naive forecasts"</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"y"</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> hiplot<span class="sc">::</span><span class="fu">theme_isazi</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="part1-fable_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Thirty–day forecasts from simple baseline models.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="arima" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> 3. ARIMA</h1>
+<h1 data-number="5"><span class="header-section-number">5</span> ARIMA</h1>
 <p><strong>Motivation</strong></p>
 <p>ARIMA (and seasonal ARIMA) is still a workhorse model, especially when you want a univariate, interpretable, statistically principled baseline.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit_arima <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">arima =</span> <span class="fu">ARIMA</span>(y))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_arima)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>fit_arima <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit_arima <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">arima =</span> <span class="fu">ARIMA</span>(y))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_arima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: y 
+Model: ARIMA(0,0,0)(2,1,0)[7] 
+
+Coefficients:
+         sar1     sar2
+      -0.6770  -0.3259
+s.e.   0.0354   0.0356
+
+sigma^2 estimated as 0.05263:  log likelihood=37.68
+AIC=-69.36   AICc=-69.33   BIC=-55.61</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit_arima <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A fable: 30 x 4 [1D]
+# Key:     .model [1]
+   .model date      
+   &lt;chr&gt;  &lt;date&gt;    
+ 1 arima  2021-12-31
+ 2 arima  2022-01-01
+ 3 arima  2022-01-02
+ 4 arima  2022-01-03
+ 5 arima  2022-01-04
+ 6 arima  2022-01-05
+ 7 arima  2022-01-06
+ 8 arima  2022-01-07
+ 9 arima  2022-01-08
+10 arima  2022-01-09
+# ℹ 20 more rows
+# ℹ 2 more variables: y &lt;dist&gt;, .mean &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fit_arima <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(data) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"ARIMA vs history"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"y"</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> hiplot<span class="sc">::</span><span class="fu">theme_isazi</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="part1-fable_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>ARIMA forecast with 80% and 95% intervals.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p><code>ARIMA()</code> automatically identifies appropriate orders (including seasonal). <code>report()</code> gives you parameter estimates and diagnostics.</p>
 <hr>
 </section>
 <section id="ets-exponential-smoothing" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> 4. ETS (Exponential Smoothing)</h1>
+<h1 data-number="6"><span class="header-section-number">6</span> ETS (Exponential Smoothing)</h1>
 <p><strong>Motivation</strong></p>
 <p>ETS models handle level, trend, and seasonality with explicit error formulations. They are robust and often perform very well on business series.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit_ets <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(y))</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>fit_ets <span class="sc">%&gt;%</span> <span class="fu">report</span>()</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>fit_ets <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fit_ets <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(y))</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>fit_ets <span class="sc">%&gt;%</span> <span class="fu">report</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: y 
+Model: ETS(A,N,A) 
+  Smoothing parameters:
+    alpha = 0.0001000038 
+    gamma = 0.0001001226 
+
+  Initial states:
+        l[0]       s[0]     s[-1]      s[-2]     s[-3]   s[-4]     s[-5]
+ 0.003877553 -0.8112172 -0.954693 -0.4576037 0.4516111 0.99606 0.7604439
+      s[-6]
+ 0.01539884
+
+  sigma^2:  0.0401
+
+     AIC     AICc      BIC 
+2476.196 2476.502 2522.127 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fit_ets <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A fable: 30 x 4 [1D]
+# Key:     .model [1]
+   .model date      
+   &lt;chr&gt;  &lt;date&gt;    
+ 1 ets    2021-12-31
+ 2 ets    2022-01-01
+ 3 ets    2022-01-02
+ 4 ets    2022-01-03
+ 5 ets    2022-01-04
+ 6 ets    2022-01-05
+ 7 ets    2022-01-06
+ 8 ets    2022-01-07
+ 9 ets    2022-01-08
+10 ets    2022-01-09
+# ℹ 20 more rows
+# ℹ 2 more variables: y &lt;dist&gt;, .mean &lt;dbl&gt;</code></pre>
+</div>
+</div>
 <p>ETS models are often a strong alternative to ARIMA when seasonal patterns are stable and the noise structure is well described by exponential smoothing.</p>
 <hr>
 </section>
 <section id="stl-ets-decompositionbased-forecasting" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> 5. STL + ETS (decomposition–based forecasting)</h1>
+<h1 data-number="7"><span class="header-section-number">7</span> STL + ETS (decomposition–based forecasting)</h1>
 <p><strong>Motivation</strong></p>
 <p>Sometimes you want to separate trend/seasonality from the short–term noise, both for interpretability and modelling flexibility. STL decomposition plus ETS on the seasonally adjusted component is a powerful pattern.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_stl <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_ets =</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(y <span class="sc">~</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="dv">7</span>)),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ETS</span>(season_adjust)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>fit_stl <span class="sc">%&gt;%</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fit_stl <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_ets =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(y <span class="sc">~</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="dv">7</span>)),</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ETS</span>(season_adjust)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>fit_stl <span class="sc">%&gt;%</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(data) <span class="sc">+</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"STL/ETS vs history"</span>,</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"y"</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> hiplot<span class="sc">::</span><span class="fu">theme_isazi</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="part1-fable_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <p>Here STL extracts a weekly seasonal component; ETS models the seasonally adjusted series.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">stl =</span> <span class="fu">STL</span>(y <span class="sc">~</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="dv">7</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"STL components for the toy series"</span>) <span class="sc">+</span> </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  hiplot<span class="sc">::</span><span class="fu">theme_isazi</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="part1-fable_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>STL decomposition separates trend and weekly seasonality.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <hr>
 </section>
-<section id="arimax-regression-with-arima-errors" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> 6. ARIMAX: regression with ARIMA errors</h1>
+<section id="double-seasonality" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Double seasonality</h1>
+<p>Real world data often has multiple seasonalities. Here’s an example with weekly, monthly and annual seasonality:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>data_seas <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="fu">as.Date</span>(<span class="st">"2020-01-01"</span>) <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y     =</span> <span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>)<span class="sc">/</span><span class="dv">7</span>) <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span><span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>)<span class="sc">/</span><span class="dv">31</span>) <span class="sc">+</span> <span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>)<span class="sc">/</span><span class="dv">365</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">730</span>, <span class="dv">0</span>, <span class="fl">0.2</span>), <span class="co"># Sample data with weekly, monthly, yearly trend</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> date</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can extend <code>STL()</code> with multiple <code>season()</code> terms—one per seasonal period—and combine it with your preferred short-term model via <code>decomposition_model()</code>. Below, the seasonal components (weekly, monthly, annual) are stripped out and the remainder is forecast either with ETS or ARIMA:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>fit_multi_stl <span class="ot">&lt;-</span> data_seas <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_ets =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>        y <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">365</span>) <span class="sc">+</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>          <span class="fu">season</span>(<span class="at">period =</span> <span class="dv">7</span>, <span class="at">window =</span> <span class="st">"periodic"</span>) <span class="sc">+</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>          <span class="fu">season</span>(<span class="at">period =</span> <span class="dv">31</span>, <span class="at">window =</span> <span class="st">"periodic"</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ETS</span>(season_adjust)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>        y <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">365</span>) <span class="sc">+</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>          <span class="fu">season</span>(<span class="at">period =</span> <span class="dv">7</span>, <span class="at">window =</span> <span class="st">"periodic"</span>) <span class="sc">+</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>          <span class="fu">season</span>(<span class="at">period =</span> <span class="dv">31</span>, <span class="at">window =</span> <span class="st">"periodic"</span>)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ARIMA</span>(season_adjust)</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>fit_multi_stl <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"90 days"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(data_seas) <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Multi-seasonal STL + ETS/ARIMA forecasts"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"y"</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="part1-fable_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>STL handles multiple seasonalities before ETS/ARIMA forecast the deseasonalised series.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>multi_stl_components <span class="ot">&lt;-</span> data_seas <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl =</span> <span class="fu">STL</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>      y <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">365</span>) <span class="sc">+</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">season</span>(<span class="at">period =</span> <span class="dv">7</span>, <span class="at">window =</span> <span class="st">"periodic"</span>) <span class="sc">+</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">season</span>(<span class="at">period =</span> <span class="dv">31</span>, <span class="at">window =</span> <span class="st">"periodic"</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">components</span>()</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>multi_stl_components <span class="sc">%&gt;%</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Weekly, monthly, and annual components via STL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="part1-fable_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>The STL decomposition explicitly isolates each seasonal component.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="arimax-regression-with-arima-errors" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> ARIMAX: regression with ARIMA errors</h1>
 <p><strong>Motivation</strong></p>
 <p>Most real–world forecasting problems need exogenous drivers: price, promotions, macro variables, events, etc. ARIMAX (regression with ARIMA errors) is the classical tool for this.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>data_x <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">promo =</span> <span class="fu">rbinom</span>(<span class="fu">n</span>(), <span class="dv">1</span>, <span class="fl">0.1</span>))</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>fit_arimax <span class="ot">&lt;-</span> data_x <span class="sc">%&gt;%</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">arimax =</span> <span class="fu">ARIMA</span>(y <span class="sc">~</span> promo))</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_arimax)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>future_x <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="fu">seq.Date</span>(<span class="fu">max</span>(data<span class="sc">$</span>date) <span class="sc">+</span> <span class="dv">1</span>, <span class="at">by =</span> <span class="st">"day"</span>, <span class="at">length.out =</span> <span class="dv">30</span>),</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">promo =</span> <span class="dv">0</span>,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> date</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>fit_arimax <span class="sc">%&gt;%</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">new_data =</span> future_x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(dplyr, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:generics':
+
+    explain</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>data_x <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">promo =</span> <span class="fu">rbinom</span>(<span class="fu">n</span>(), <span class="dv">1</span>, <span class="fl">0.1</span>))</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>fit_arimax <span class="ot">&lt;-</span> data_x <span class="sc">%&gt;%</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">arimax =</span> <span class="fu">ARIMA</span>(y <span class="sc">~</span> promo))</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_arimax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: y 
+Model: LM w/ ARIMA(0,0,0)(2,1,0)[7] errors 
+
+Coefficients:
+         sar1     sar2    promo
+      -0.6769  -0.3260  -0.0019
+s.e.   0.0354   0.0357   0.0272
+
+sigma^2 estimated as 0.0527:  log likelihood=37.68
+AIC=-67.36   AICc=-67.31   BIC=-49.03</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>future_x <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="fu">seq.Date</span>(<span class="fu">max</span>(data<span class="sc">$</span>date) <span class="sc">+</span> <span class="dv">1</span>, <span class="at">by =</span> <span class="st">"day"</span>, <span class="at">length.out =</span> <span class="dv">30</span>),</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">promo =</span> <span class="dv">0</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> date</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>fit_arimax <span class="sc">%&gt;%</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">new_data =</span> future_x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A fable: 30 x 5 [1D]
+# Key:     .model [1]
+   .model date      
+   &lt;chr&gt;  &lt;date&gt;    
+ 1 arimax 2021-12-31
+ 2 arimax 2022-01-01
+ 3 arimax 2022-01-02
+ 4 arimax 2022-01-03
+ 5 arimax 2022-01-04
+ 6 arimax 2022-01-05
+ 7 arimax 2022-01-06
+ 8 arimax 2022-01-07
+ 9 arimax 2022-01-08
+10 arimax 2022-01-09
+# ℹ 20 more rows
+# ℹ 3 more variables: y &lt;dist&gt;, .mean &lt;dbl&gt;, promo &lt;dbl&gt;</code></pre>
+</div>
+</div>
 <ul>
 <li><code>promo</code> captures uplift relative to the baseline.</li>
 <li>The ARIMA error structure accounts for remaining autocorrelation.</li>
@@ -357,32 +700,52 @@ window.Quarto = {
 <p>You can add more regressors (price, other features) in the same way.</p>
 <hr>
 </section>
-<section id="multiple-series-with-keys" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> 7. Multiple series with keys</h1>
+<section id="multiple-series-with-keys" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Multiple series with keys</h1>
 <p><strong>Motivation</strong></p>
 <p>In retail and operations, you rarely have a single series. You typically have thousands (SKU × store × region). fable’s key semantics let you fit one model per series with identical code.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>data_multi <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id   =</span> <span class="fu">rep</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">each =</span> <span class="dv">730</span>),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> <span class="fu">rep</span>(<span class="fu">as.Date</span>(<span class="st">"2020-01-01"</span>) <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>, <span class="dv">5</span>),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y    =</span> <span class="fu">rnorm</span>(<span class="dv">5</span> <span class="sc">*</span> <span class="dv">730</span>),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">key  =</span> id,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> date</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>fit_multi <span class="ot">&lt;-</span> data_multi <span class="sc">%&gt;%</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">arima =</span> <span class="fu">ARIMA</span>(y))</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>fit_multi <span class="sc">%&gt;%</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>data_multi <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id   =</span> <span class="fu">rep</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">each =</span> <span class="dv">730</span>),</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> <span class="fu">rep</span>(<span class="fu">as.Date</span>(<span class="st">"2020-01-01"</span>) <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>, <span class="dv">5</span>),</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y    =</span> <span class="fu">rnorm</span>(<span class="dv">5</span> <span class="sc">*</span> <span class="dv">730</span>),</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">key  =</span> id,</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> date</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>fit_multi <span class="ot">&lt;-</span> data_multi <span class="sc">%&gt;%</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">arima =</span> <span class="fu">ARIMA</span>(y))</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>fit_multi <span class="sc">%&gt;%</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A fable: 150 x 5 [1D]
+# Key:     id, .model [5]
+   id    .model date      
+   &lt;chr&gt; &lt;chr&gt;  &lt;date&gt;    
+ 1 a     arima  2021-12-31
+ 2 a     arima  2022-01-01
+ 3 a     arima  2022-01-02
+ 4 a     arima  2022-01-03
+ 5 a     arima  2022-01-04
+ 6 a     arima  2022-01-05
+ 7 a     arima  2022-01-06
+ 8 a     arima  2022-01-07
+ 9 a     arima  2022-01-08
+10 a     arima  2022-01-09
+# ℹ 140 more rows
+# ℹ 2 more variables: y &lt;dist&gt;, .mean &lt;dbl&gt;</code></pre>
+</div>
+</div>
 <p>Each key (<code>id</code>) gets its own ARIMA model. You can still summarise accuracy and forecasts across all keys.</p>
 <hr>
 </section>
-<section id="hierarchies-reconciliation-including-mint" class="level1" data-number="10">
-<h1 data-number="10"><span class="header-section-number">10</span> 8. Hierarchies &amp; reconciliation (including MinT)</h1>
+<section id="hierarchies-reconciliation-including-mint" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Hierarchies &amp; reconciliation (including MinT)</h1>
 <p><strong>Motivation</strong></p>
 <p>Hierarchical and grouped time series (e.g.&nbsp;SKU → brand → category → region → country) require <em>coherent</em> forecasts: children should add up to parents. Reconciliation methods adjust a set of base forecasts to satisfy aggregation constraints while staying close to the originals.</p>
-<section id="conceptual-view" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="conceptual-view"><span class="header-section-number">10.1</span> 8.1 Conceptual view</h2>
+<section id="conceptual-view" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="conceptual-view"><span class="header-section-number">11.1</span> Conceptual view</h2>
 <p>Stack all series at time <em>t</em> into a vector <strong>y</strong>ₜ. There exists a summing matrix <strong>S</strong> such that</p>
 <p><span class="math display">\[
 \mathbf{y}_t = \mathbf{S} \, \mathbf{b}_t
@@ -410,66 +773,126 @@ window.Quarto = {
 </ul>
 <p>In practice, fable estimates <strong>W</strong> from in–sample residuals and performs this matrix algebra for you.</p>
 </section>
-<section id="using-reconciliation-in-fable" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="using-reconciliation-in-fable"><span class="header-section-number">10.2</span> 8.2 Using reconciliation in fable</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fabletools)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibbledata)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>tourism <span class="ot">&lt;-</span> tourism  <span class="co"># key = (Region, Purpose)</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> tourism <span class="sc">%&gt;%</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Trips))</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>rec <span class="ot">&lt;-</span> fit <span class="sc">%&gt;%</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reconcile</span>(</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">bu   =</span> <span class="fu">bottom_up</span>(ets),</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">mint =</span> <span class="fu">min_trace</span>(ets),</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">mint_shr =</span> <span class="fu">min_trace</span>(ets, <span class="at">method =</span> <span class="st">"mint_shrink"</span>)</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>fc <span class="ot">&lt;-</span> rec <span class="sc">%&gt;%</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"3 years"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="using-reconciliation-in-fable" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="using-reconciliation-in-fable"><span class="header-section-number">11.2</span> Using reconciliation in fable</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(fabletools, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(tsibbledata, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>tourism <span class="ot">&lt;-</span> tourism  <span class="co"># key = (Region, Purpose)</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>tourism_small <span class="ot">&lt;-</span> tourism <span class="sc">%&gt;%</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    Region <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Sydney"</span>, <span class="st">"Melbourne"</span>, <span class="st">"Brisbane"</span>, <span class="st">"Perth"</span>),</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    Purpose <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Business"</span>, <span class="st">"Holiday"</span>)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> tourism_small <span class="sc">%&gt;%</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Trips))</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>rec <span class="ot">&lt;-</span> fit <span class="sc">%&gt;%</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reconcile</span>(</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">bu =</span> <span class="fu">bottom_up</span>(ets)</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>fc <span class="ot">&lt;-</span> rec <span class="sc">%&gt;%</span></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"3 years"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Guidelines:</p>
 <ul>
 <li><strong>bottom_up()</strong>: use when bottom–level series are well measured and you care most about them.</li>
 <li><strong>min_trace() / mint_shrink</strong>: use when you want balanced accuracy across levels, and when noise at the bottom is substantial.</li>
+<li>(Omitted from the runnable example for speed, but you can add <code>min_trace(ets)</code> or <code>min_trace(ets, method = "mint_shrink")</code> in the <code>reconcile()</code> call above to try MinT.)</li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>fc <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Region <span class="sc">==</span> <span class="st">"Sydney"</span>, Purpose <span class="sc">==</span> <span class="st">"Holiday"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    tourism_small <span class="sc">%&gt;%</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(Region <span class="sc">==</span> <span class="st">"Sydney"</span>, Purpose <span class="sc">==</span> <span class="st">"Holiday"</span>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sydney holiday forecasts: base ETS vs bottom-up"</span>,</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Trips"</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  hiplot<span class="sc">::</span><span class="fu">theme_isazi</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="part1-fable_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Reconciled forecasts for Sydney holiday travel across reconciliation strategies.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <hr>
 </section>
 </section>
-<section id="rollingorigin-evaluation-tscv" class="level1" data-number="11">
-<h1 data-number="11"><span class="header-section-number">11</span> 9. Rolling–origin evaluation (tscv)</h1>
+<section id="rollingorigin-evaluation-tscv" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Rolling–origin evaluation (tscv)</h1>
 <p><strong>Motivation</strong></p>
 <p>A single train/test split can be misleading in time series. Rolling–origin (or “time series cross–validation”) repeatedly trains on expanding windows and evaluates a fixed horizon ahead.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cv <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stretch_tsibble</span>(<span class="at">.init =</span> <span class="dv">365</span>, <span class="at">.step =</span> <span class="dv">30</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>cv_results <span class="ot">&lt;-</span> cv <span class="sc">%&gt;%</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">arima =</span> <span class="fu">ARIMA</span>(y)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">30</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(cv_results, data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>cv <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stretch_tsibble</span>(<span class="at">.init =</span> <span class="dv">365</span>, <span class="at">.step =</span> <span class="dv">30</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>cv_results <span class="ot">&lt;-</span> cv <span class="sc">%&gt;%</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">arima =</span> <span class="fu">ARIMA</span>(y)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">30</span>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(cv_results, data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+25 observations are missing between 2021-12-31 and 2022-01-24</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 10
+  .model .type      ME  RMSE   MAE   MPE  MAPE  MASE RMSSE    ACF1
+  &lt;chr&gt;  &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+1 arima  Test  0.00376 0.240 0.189  85.1  143. 0.838 0.854 -0.0996</code></pre>
+</div>
+</div>
 <p>Each row of the stretched tsibble represents one training window; <code>forecast(h = 30)</code> produces 30–day–ahead forecasts for that window.</p>
 <hr>
 </section>
-<section id="combining-forecasts" class="level1" data-number="12">
-<h1 data-number="12"><span class="header-section-number">12</span> 10. Combining forecasts</h1>
+<section id="combining-forecasts" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Combining forecasts</h1>
 <p><strong>Motivation</strong></p>
 <p>Forecast combinations are cheap and often yield gains over any single model. Even simple averages can be very effective.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">arima =</span> <span class="fu">ARIMA</span>(y),</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ets   =</span> <span class="fu">ETS</span>(y),</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean  =</span> <span class="fu">MEAN</span>(y)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>combo <span class="ot">&lt;-</span> fit <span class="sc">%&gt;%</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">combo =</span> (arima <span class="sc">+</span> ets <span class="sc">+</span> mean) <span class="sc">/</span> <span class="dv">3</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>combo <span class="sc">%&gt;%</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">arima =</span> <span class="fu">ARIMA</span>(y),</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ets   =</span> <span class="fu">ETS</span>(y),</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean  =</span> <span class="fu">MEAN</span>(y)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>combo <span class="ot">&lt;-</span> fit <span class="sc">%&gt;%</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">combo =</span> (arima <span class="sc">+</span> ets <span class="sc">+</span> mean) <span class="sc">/</span> <span class="dv">3</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>combo <span class="sc">%&gt;%</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A fable: 120 x 4 [1D]
+# Key:     .model [4]
+   .model date      
+   &lt;chr&gt;  &lt;date&gt;    
+ 1 arima  2021-12-31
+ 2 arima  2022-01-01
+ 3 arima  2022-01-02
+ 4 arima  2022-01-03
+ 5 arima  2022-01-04
+ 6 arima  2022-01-05
+ 7 arima  2022-01-06
+ 8 arima  2022-01-07
+ 9 arima  2022-01-08
+10 arima  2022-01-09
+# ℹ 110 more rows
+# ℹ 2 more variables: y &lt;dist&gt;, .mean &lt;dbl&gt;</code></pre>
+</div>
+</div>
 <p>You can also use regression–based combinations or more sophisticated weighting schemes via <code>regress_combination()</code> in fabletools.</p>
 
 
@@ -527,14 +950,13 @@ window.Quarto = {
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

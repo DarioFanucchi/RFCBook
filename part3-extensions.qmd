@@ -2,35 +2,52 @@
 title: "Part III — Extensions, retail patterns & feature engineering"
 ---
 
-# 19. Advanced timetk usage
+# Advanced timetk usage
 
 **Motivation**
 
 `timetk` is a powerful toolkit for time–based feature engineering, visualisation, and cross–validation. It plays very nicely with both tidymodels and direct data–frame workflows.
 
-## 19.1 Time series signatures
+## Time series signatures
 
 You can generate time–based features directly, without recipes:
 
-```r
-library(timetk)
+```{r}
+require(dplyr, quietly = TRUE)
+time_series_split <- timetk::time_series_split
+time_series_cv <- timetk::time_series_cv
+
+xgb_spec <- parsnip::boost_tree(
+  trees = 1000,
+  learn_rate = 0.03,
+  tree_depth = 8
+) %>%
+  parsnip::set_engine("xgboost") %>%
+  parsnip::set_mode("regression")
+
+data <- tibble::tibble(
+  date = as.Date("2020-01-01") + 0:729,
+  y    = sin(2*pi*(0:729)/7) + rnorm(730, 0, 0.2)
+)
+
+rec <- recipes::recipe(y ~ date, data = data)
 
 data_sig <- data %>%
-  tk_augment_timeseries_signature(date) %>%
-  select(-contains("hour"), -contains("minute"),
-         -contains("second"), -contains("am.pm"))
+  timetk::tk_augment_timeseries_signature(date) %>%
+  select(-tidyselect::contains("hour"), -tidyselect::contains("minute"),
+         -tidyselect::contains("second"), -tidyselect::contains("am.pm"))
 ```
 
 This yields fields like year, month, week, day of week, quarter, etc.
 
-## 19.2 Lags and sliding windows
+## Lags and sliding windows
 
-```r
+```{r}
 data_lags <- data_sig %>%
-  tk_augment_lags(y, .lags = c(1, 7, 14))
+  timetk::tk_augment_lags(y, .lags = c(1, 7, 14))
 
 data_roll <- data_lags %>%
-  tk_augment_slidify(
+  timetk::tk_augment_slidify(
     .value  = y,
     .f      = ~ mean(.x, na.rm = TRUE),
     .period = 7,
@@ -42,9 +59,9 @@ data_roll <- data_lags %>%
 
 This produces lagged versions of `y` and a rolling 7–day mean.
 
-## 19.3 Visualising time–series CV plans
+## Visualising time–series CV plans
 
-```r
+```{r}
 cv_plan <- time_series_cv(
   data,
   assess     = 90,
@@ -53,8 +70,8 @@ cv_plan <- time_series_cv(
 )
 
 cv_plan %>%
-  tk_time_series_cv_plan() %>%
-  plot_time_series_cv_plan(
+  timetk::tk_time_series_cv_plan() %>%
+  timetk::plot_time_series_cv_plan(
     .date_var = date,
     .value    = y
   )
@@ -64,16 +81,16 @@ This allows you to inspect your rolling window splits visually and confirm they 
 
 ---
 
-# 20. Promotions, price & cannibalisation
+# Promotions, price & cannibalisation
 
 **Motivation**
 
 In retail, static seasonality is the easy part. The interesting dynamics come from promotions, pricing, and interactions across products (cannibalisation). We look at classical (fable) and ML (modeltime) approaches.
 
-## 20.1 ARIMAX in fable for promo & price
+## ARIMAX in fable for promo & price
 
-```r
-data_retail <- tsibble(
+```{r}
+data_retail <- tsibble::tsibble(
   date   = as.Date("2020-01-01") + 0:729,
   sales  = rpois(730, 100),
   promo  = rbinom(730, 1, 0.1),
@@ -82,11 +99,11 @@ data_retail <- tsibble(
 )
 
 fit_arimax <- data_retail %>%
-  model(
-    arimax = ARIMA(sales ~ promo + price)
+  fabletools::model(
+    arimax = fable::ARIMA(sales ~ promo + price)
   )
 
-fit_arimax %>% report()
+fit_arimax %>% fabletools::report()
 ```
 
 Interpretation:
@@ -96,16 +113,17 @@ Interpretation:
 
 You can add lags and interactions, e.g. `promo + lag(promo) + price + promo:holiday_flag`.
 
-## 20.2 ML global model for promos & price
+## ML global model for promos & price
 
-```r
+```{r}
 data_panel <- tibble(
   sku   = rep(letters[1:20], each = 730),
   date  = rep(as.Date("2020-01-01") + 0:729, 20),
   sales = rpois(20 * 730, 100),
   promo = rbinom(20 * 730, 1, 0.1),
   price = runif(20 * 730, 9, 12)
-)
+) %>%
+  arrange(date, sku)
 
 splits_p <- time_series_split(
   data_panel,
@@ -113,17 +131,19 @@ splits_p <- time_series_split(
   cumulative = TRUE
 )
 
-rec_promos <- recipe(sales ~ sku + date + promo + price,
-                     data = training(splits_p)) %>%
-  step_timeseries_signature(date) %>%
-  step_dummy(all_nominal_predictors()) %>%
-  step_normalize(all_numeric_predictors())
+rec_promos <- recipes::recipe(sales ~ sku + date + promo + price,
+                     data = rsample::training(splits_p)) %>%
+  timetk::step_timeseries_signature(date) %>%
+  recipes::step_rm(date) %>%
+  recipes::step_dummy(recipes::all_nominal_predictors(), one_hot = TRUE) %>%
+  recipes::step_zv(recipes::all_predictors()) %>%
+  recipes::step_normalize(recipes::all_numeric_predictors())
 
-wf_promos <- workflow() %>%
-  add_recipe(rec_promos) %>%
-  add_model(xgb_spec)
+wf_promos <- workflows::workflow() %>%
+  workflows::add_recipe(rec_promos) %>%
+  workflows::add_model(xgb_spec)
 
-fit_promos <- fit(wf_promos, training(splits_p))
+fit_promos <- workflows::fit(wf_promos, rsample::training(splits_p))
 ```
 
 For cannibalisation, you precompute features such as:
@@ -136,37 +156,49 @@ via group–by / lag operations, then feed into the recipe.
 
 ---
 
-# 21. Feature engineering cookbook for ML time series
+# Feature engineering cookbook for ML time series
 
 **Motivation**
 
 Global ML models live or die on features. This chapter summarises common patterns you can compose.
 
-## 21.1 Time–based features
+## Time–based features
 
 - `step_timeseries_signature(date)` or `tk_augment_timeseries_signature()`.
 - Fourier terms for long seasonalities (e.g. yearly with daily data).
 
-## 21.2 Lags & rolling statistics
+## Lags & rolling statistics
 
 In recipes:
 
-```r
+```{r}
 rec_lags <- rec %>%
-  step_lag(y, lag = c(1, 7, 14)) %>%
-  step_roll_mean(y, lag = 7, window = 7,
-                 align = "right", id = "roll_mean_7") %>%
-  step_roll_sd(y, lag = 7, window = 7,
-               align = "right", id = "roll_sd_7")
+  recipes::step_lag(y, lag = c(1, 7, 14)) %>%
+  timetk::step_slidify(
+    y,
+    period = 7,
+    .f = mean,
+    align = "right",
+    partial = FALSE,
+    names = "roll_mean_7"
+  ) %>%
+  timetk::step_slidify(
+    y,
+    period = 7,
+    .f = sd,
+    align = "right",
+    partial = FALSE,
+    names = "roll_sd_7"
+  )
 ```
 
 These capture local dynamics that trees exploit well.
 
-## 21.3 Calendar & holiday features
+## Calendar & holiday features
 
 Use `step_holiday()` or precomputed holiday tables to add dummies for important days, long weekends, etc.
 
-## 21.4 Price & promo–derived features
+## Price & promo–derived features
 
 Examples:
 
@@ -174,7 +206,7 @@ Examples:
 - `promo_flag = as.integer(discount_pct > 0.1)`
 - `price_index` vs category average.
 
-## 21.5 Cross–series interaction features
+## Cross–series interaction features
 
 Use group–by / summarise to compute, for each date and category:
 
@@ -186,22 +218,22 @@ Then join back to the main table and feed into your recipe.
 
 ---
 
-# 22. Per–SKU vs global models
+# Per–SKU vs global models
 
 **Motivation**
 
 A key design choice: do you fit a separate model per SKU (e.g., ARIMA in fable) or a global model (e.g., XGBoost in modeltime)? It’s worth comparing them quantitatively.
 
-## 22.1 Per–SKU ARIMA (fable)
+## Per–SKU ARIMA (fable)
 
-```r
-ts_panel <- as_tsibble(
+```{r}
+ts_panel <- tsibble::as_tsibble(
   data_panel,
   key   = sku,
   index = date
 )
 
-split_date <- as.Date("2021-12-31")
+split_date <- as.Date("2021-06-30")
 
 train_ts <- ts_panel %>%
   filter(date <= split_date)
@@ -210,55 +242,69 @@ test_ts <- ts_panel %>%
   filter(date > split_date)
 
 fit_per <- train_ts %>%
-  model(arima = ARIMA(sales))
+  fabletools::model(arima = fable::ARIMA(sales))
 
-fc_per <- fit_per %>%
-  forecast(h = n_distinct(test_ts$date))
-
-acc_per <- fc_per %>%
-  accuracy(test_ts, by = "sku") %>%
-  select(sku, rmse_per = RMSE)
+acc_per <- fc_per <- fit_per %>%
+  fabletools::forecast(h = dplyr::n_distinct(test_ts$date)) %>%
+  as_tibble() %>%
+  transmute(
+    sku,
+    date,
+    .pred = purrr::map_dbl(sales, mean)
+  ) %>%
+  left_join(
+    tsibble::as_tibble(test_ts) %>%
+      select(sku, date, sales),
+    by = c("sku", "date")
+  ) %>%
+  group_by(sku) %>%
+  summarise(
+    rmse_per = yardstick::rmse_vec(truth = sales, estimate = .pred),
+    .groups = "drop"
+  )
 ```
 
-## 22.2 Global XGBoost (modeltime)
+## Global XGBoost (modeltime)
 
-```r
+```{r}
 splits_panel <- time_series_split(
   data_panel,
-  assess     = sum(data_panel$date > split_date),
+  assess     = 600,
   cumulative = TRUE
 )
 
-rec_global <- recipe(sales ~ sku + date + promo + price,
-                     data = training(splits_panel)) %>%
-  step_timeseries_signature(date) %>%
-  step_dummy(all_nominal_predictors()) %>%
-  step_normalize(all_numeric_predictors())
+rec_global <- recipes::recipe(sales ~ sku + date + promo + price,
+                     data = rsample::training(splits_panel)) %>%
+  timetk::step_timeseries_signature(date) %>%
+  recipes::step_rm(date) %>%
+  recipes::step_dummy(recipes::all_nominal_predictors(), one_hot = TRUE) %>%
+  recipes::step_zv(recipes::all_predictors()) %>%
+  recipes::step_normalize(recipes::all_numeric_predictors())
 
-wf_global <- workflow() %>%
-  add_recipe(rec_global) %>%
-  add_model(xgb_spec)
+wf_global <- workflows::workflow() %>%
+  workflows::add_recipe(rec_global) %>%
+  workflows::add_model(xgb_spec)
 
-fit_global <- fit(wf_global, training(splits_panel))
+fit_global <- workflows::fit(wf_global, rsample::training(splits_panel))
 
-fc_global <- modeltime_table(fit_global) %>%
-  modeltime_calibrate(testing(splits_panel)) %>%
-  modeltime_forecast(
-    new_data    = testing(splits_panel),
-    actual_data = data_panel
+fc_global <- modeltime::modeltime_table(fit_global) %>%
+  modeltime::modeltime_calibrate(rsample::testing(splits_panel)) %>%
+  modeltime::modeltime_forecast(
+    new_data    = rsample::testing(splits_panel),
+    actual_data = data_panel,
+    keep_data   = TRUE
   )
 ```
 
 Map to per–SKU RMSE:
 
-```r
-library(dplyr)
-library(yardstick)
-
+```{r}
 acc_global <- fc_global %>%
+  filter(.key == "prediction") %>%
   group_by(sku) %>%
   summarise(
-    rmse_global = rmse_vec(truth = .value, estimate = .pred)
+    rmse_global = yardstick::rmse_vec(truth = sales, estimate = .value),
+    .groups = "drop"
   )
 
 comparison <- acc_per %>%
@@ -270,7 +316,7 @@ You can now see how many SKUs prefer global vs per–SKU models and by how much.
 
 ---
 
-# 23. End–to–end engine pattern
+# End–to–end engine pattern
 
 **Motivation**
 
@@ -286,27 +332,29 @@ A minimal pattern:
 
 Pseudocode for modelling step:
 
-```r
+```{r}
 fit_forecast_models <- function(features, horizon, engine = c("fable", "modeltime")) {
   engine <- match.arg(engine)
   if (engine == "fable") {
     ts <- features %>%
-      as_tsibble(key = c(sku, depot), index = date)
+      tsibble::as_tsibble(key = c(sku, depot), index = date)
 
-    ts %>% model(ARIMA(qty))
+    ts %>% fabletools::model(fable::ARIMA(qty))
   } else {
     splits <- time_series_split(features, assess = horizon, cumulative = TRUE)
 
-    rec <- recipe(qty ~ ., data = training(splits)) %>%
-      step_timeseries_signature(date) %>%
-      step_dummy(all_nominal_predictors()) %>%
-      step_normalize(all_numeric_predictors())
+    rec <- recipes::recipe(qty ~ ., data = rsample::training(splits)) %>%
+      timetk::step_timeseries_signature(date) %>%
+      recipes::step_rm(date) %>%
+      recipes::step_dummy(recipes::all_nominal_predictors()) %>%
+      recipes::step_zv(recipes::all_predictors()) %>%
+      recipes::step_normalize(recipes::all_numeric_predictors())
 
-    wf <- workflow() %>%
-      add_recipe(rec) %>%
-      add_model(xgb_spec)
+    wf <- workflows::workflow() %>%
+      workflows::add_recipe(rec) %>%
+      workflows::add_model(xgb_spec)
 
-    fit(wf, training(splits))
+    workflows::fit(wf, rsample::training(splits))
   }
 }
 ```

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -68,15 +68,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./part3-extensions.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-27c261d06b905028a18691de25d09dde.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-485d01fc63b59abcd3ee1bf1e8e2748d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -135,7 +134,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <a href="./">Practical Forecasting in R with fable &amp; modeltime</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/DarioFanucchi/RFCBook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./Practical-Forecasting-in-R-with-fable---modeltime.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -186,12 +184,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#h2o-automl-for-forecasting" id="toc-h2o-automl-for-forecasting" class="nav-link active" data-scroll-target="#h2o-automl-for-forecasting"><span class="header-section-number">6</span> 24. H2O &amp; AutoML for forecasting</a></li>
-  <li><a href="#initialising-h2o" id="toc-initialising-h2o" class="nav-link" data-scroll-target="#initialising-h2o"><span class="header-section-number">7</span> 25. Initialising H2O</a></li>
-  <li><a href="#a-basic-automl-forecasting-workflow" id="toc-a-basic-automl-forecasting-workflow" class="nav-link" data-scroll-target="#a-basic-automl-forecasting-workflow"><span class="header-section-number">8</span> 26. A basic AutoML forecasting workflow</a></li>
-  <li><a href="#what-h2o-automl-is-doing-under-the-hood" id="toc-what-h2o-automl-is-doing-under-the-hood" class="nav-link" data-scroll-target="#what-h2o-automl-is-doing-under-the-hood"><span class="header-section-number">9</span> 27. What H2O AutoML is doing under the hood</a></li>
-  <li><a href="#timeseries-semantics-caveats" id="toc-timeseries-semantics-caveats" class="nav-link" data-scroll-target="#timeseries-semantics-caveats"><span class="header-section-number">10</span> 28. Time–series semantics &amp; caveats</a></li>
-  <li><a href="#when-to-use-h2o-automl-vs-manual-models" id="toc-when-to-use-h2o-automl-vs-manual-models" class="nav-link" data-scroll-target="#when-to-use-h2o-automl-vs-manual-models"><span class="header-section-number">11</span> 29. When to use H2O AutoML vs manual models</a></li>
+  <li><a href="#h2o-automl-for-forecasting" id="toc-h2o-automl-for-forecasting" class="nav-link active" data-scroll-target="#h2o-automl-for-forecasting"><span class="header-section-number">6</span> H2O &amp; AutoML for forecasting</a></li>
+  <li><a href="#initialising-h2o" id="toc-initialising-h2o" class="nav-link" data-scroll-target="#initialising-h2o"><span class="header-section-number">7</span> Initialising H2O</a></li>
+  <li><a href="#a-basic-automl-forecasting-workflow" id="toc-a-basic-automl-forecasting-workflow" class="nav-link" data-scroll-target="#a-basic-automl-forecasting-workflow"><span class="header-section-number">8</span> A basic AutoML forecasting workflow</a></li>
+  <li><a href="#what-h2o-automl-is-doing-under-the-hood" id="toc-what-h2o-automl-is-doing-under-the-hood" class="nav-link" data-scroll-target="#what-h2o-automl-is-doing-under-the-hood"><span class="header-section-number">9</span> What H2O AutoML is doing under the hood</a></li>
+  <li><a href="#timeseries-semantics-caveats" id="toc-timeseries-semantics-caveats" class="nav-link" data-scroll-target="#timeseries-semantics-caveats"><span class="header-section-number">10</span> Time–series semantics &amp; caveats</a></li>
+  <li><a href="#when-to-use-h2o-automl-vs-manual-models" id="toc-when-to-use-h2o-automl-vs-manual-models" class="nav-link" data-scroll-target="#when-to-use-h2o-automl-vs-manual-models"><span class="header-section-number">11</span> When to use H2O AutoML vs manual models</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/DarioFanucchi/RFCBook/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/DarioFanucchi/RFCBook/blob/main/part4-automl-h2o.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
     </div>
@@ -218,62 +216,104 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <section id="h2o-automl-for-forecasting" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> 24. H2O &amp; AutoML for forecasting</h1>
+<h1 data-number="6"><span class="header-section-number">6</span> H2O &amp; AutoML for forecasting</h1>
 <p><strong>Motivation</strong></p>
 <p>Sometimes you want to search over many model classes automatically and get a strong baseline without hand–tuning. <strong>H2O AutoML</strong> is a mature AutoML system for tabular data. <code>modeltime.h2o</code> plugs it into the modeltime workflow, giving you AutoML–style model search while keeping time–series semantics in your resampling and features.</p>
 <hr>
 </section>
 <section id="initialising-h2o" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> 25. Initialising H2O</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(h2o)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modeltime.h2o)</span>
+<h1 data-number="7"><span class="header-section-number">7</span> Initialising H2O</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>automl_available <span class="ot">&lt;-</span> <span class="fu">requireNamespace</span>(<span class="st">"modeltime.h2o"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>) <span class="sc">&amp;&amp;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">requireNamespace</span>(<span class="st">"h2o"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">h2o.init</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>automl_available) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"modeltime.h2o + h2o not installed; AutoML chunks will be displayed but not evaluated."</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>modeltime.h2o + h2o not installed; AutoML chunks will be displayed but not evaluated.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(h2o, <span class="at">quietly=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(modeltime.h2o, <span class="at">quietly=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">h2o.init</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>You can control memory and cluster size via arguments to <code>h2o.init()</code> if needed.</p>
 <hr>
 </section>
 <section id="a-basic-automl-forecasting-workflow" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> 26. A basic AutoML forecasting workflow</h1>
+<h1 data-number="8"><span class="header-section-number">8</span> A basic AutoML forecasting workflow</h1>
 <p>We reuse the <code>data_x</code> example with <code>y</code>, <code>date</code>, <code>promo</code>, and <code>price</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>splits_x <span class="ot">&lt;-</span> <span class="fu">time_series_split</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  data_x,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">assess     =</span> <span class="dv">90</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">cumulative =</span> <span class="cn">TRUE</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>rec_h2o <span class="ot">&lt;-</span> <span class="fu">recipe</span>(y <span class="sc">~</span> ., <span class="at">data =</span> <span class="fu">training</span>(splits_x)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_timeseries_signature</span>(date) <span class="sc">%&gt;%</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_rm</span>(<span class="fu">contains</span>(<span class="st">"hour"</span>), <span class="fu">contains</span>(<span class="st">"minute"</span>), <span class="fu">contains</span>(<span class="st">"second"</span>), <span class="fu">contains</span>(<span class="st">"am.pm"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>splits_x <span class="ot">&lt;-</span> <span class="fu">time_series_split</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  data_x,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">assess     =</span> <span class="dv">90</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">cumulative =</span> <span class="cn">TRUE</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>rec_h2o <span class="ot">&lt;-</span> <span class="fu">recipe</span>(y <span class="sc">~</span> ., <span class="at">data =</span> <span class="fu">training</span>(splits_x)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_timeseries_signature</span>(date) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_rm</span>(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    date,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contains</span>(<span class="st">"hour"</span>),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contains</span>(<span class="st">"minute"</span>),</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contains</span>(<span class="st">"second"</span>),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contains</span>(<span class="st">"am.pm"</span>),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contains</span>(<span class="st">"lbl"</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Specify an AutoML regression model:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>h2o_spec <span class="ot">&lt;-</span> <span class="fu">automl_reg</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_runtime_mins =</span> <span class="dv">10</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_models       =</span> <span class="dv">20</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed             =</span> <span class="dv">123</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"h2o"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>h2o_spec <span class="ot">&lt;-</span> <span class="fu">automl_reg</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_runtime_mins =</span> <span class="dv">10</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_models       =</span> <span class="dv">20</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed             =</span> <span class="dv">123</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"h2o"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Build workflow and fit:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>wf_h2o <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(rec_h2o) <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(h2o_spec)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>fit_h2o <span class="ot">&lt;-</span> wf_h2o <span class="sc">%&gt;%</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="fu">training</span>(splits_x))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>wf_h2o <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(rec_h2o) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(h2o_spec)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>fit_h2o <span class="ot">&lt;-</span> wf_h2o <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="fu">training</span>(splits_x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Evaluate:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modeltime_table</span>(fit_h2o) <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modeltime_calibrate</span>(<span class="fu">testing</span>(splits_x)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modeltime_accuracy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modeltime_table</span>(fit_h2o) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modeltime_calibrate</span>(<span class="fu">testing</span>(splits_x)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modeltime_accuracy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Forecast:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modeltime_table</span>(fit_h2o) <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modeltime_calibrate</span>(<span class="fu">testing</span>(splits_x)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modeltime_forecast</span>(</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_data    =</span> <span class="fu">testing</span>(splits_x),</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">actual_data =</span> data_x</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>h2o_calib <span class="ot">&lt;-</span> <span class="fu">modeltime_table</span>(fit_h2o) <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modeltime_calibrate</span>(<span class="fu">testing</span>(splits_x))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>h2o_fc <span class="ot">&lt;-</span> h2o_calib <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">modeltime_forecast</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_data    =</span> <span class="fu">testing</span>(splits_x),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">actual_data =</span> data_x</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>h2o_fc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>h2o_fc <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_modeltime_forecast</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">.title =</span> <span class="st">"H2O AutoML leader vs actuals"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.legend_max_width =</span> <span class="dv">24</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <hr>
 </section>
 <section id="what-h2o-automl-is-doing-under-the-hood" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> 27. What H2O AutoML is doing under the hood</h1>
+<h1 data-number="9"><span class="header-section-number">9</span> What H2O AutoML is doing under the hood</h1>
 <ul>
 <li>Splits the training data internally into training/validation.</li>
 <li>Tries many model classes: GBM, Random Forest, GLM, deep learning, stacked ensembles, etc.</li>
@@ -281,12 +321,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Returns a “leader” model that is exposed through the modeltime interface.</li>
 </ul>
 <p>For deeper inspection, you can access the underlying H2O objects:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>leaderboard <span class="ot">&lt;-</span> <span class="fu">h2o.get_leaderboard</span>()</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>leaderboard</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>leaderboard <span class="ot">&lt;-</span> <span class="fu">h2o.get_leaderboard</span>()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>leaderboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <hr>
 </section>
 <section id="timeseries-semantics-caveats" class="level1" data-number="10">
-<h1 data-number="10"><span class="header-section-number">10</span> 28. Time–series semantics &amp; caveats</h1>
+<h1 data-number="10"><span class="header-section-number">10</span> Time–series semantics &amp; caveats</h1>
 <p><strong>Important</strong></p>
 <p>H2O AutoML itself does <strong>not</strong> understand time. It sees a supervised regression problem. The time–series semantics come from:</p>
 <ul>
@@ -302,7 +344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 <section id="when-to-use-h2o-automl-vs-manual-models" class="level1" data-number="11">
-<h1 data-number="11"><span class="header-section-number">11</span> 29. When to use H2O AutoML vs manual models</h1>
+<h1 data-number="11"><span class="header-section-number">11</span> When to use H2O AutoML vs manual models</h1>
 <p><strong>Use AutoML when:</strong></p>
 <ul>
 <li>You want a strong baseline quickly.</li>
@@ -378,14 +420,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

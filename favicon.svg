@@ -1,0 +1,42 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  role="img"
+  aria-label="Forecast and actual curves"
+>
+  <!-- Axes -->
+  <line x1="10" y1="8"  x2="10" y2="54" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <line x1="10" y1="54" x2="56" y2="54" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Actual curve (solid, with markers) -->
+  <path
+    d="M12 48
+       C18 44, 22 40, 26 36
+       S36 28, 40 26
+       S50 20, 54 18"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Actual data points -->
+  <circle cx="18" cy="44" r="2.3" fill="currentColor"/>
+  <circle cx="26" cy="36" r="2.3" fill="currentColor"/>
+  <circle cx="36" cy="30" r="2.3" fill="currentColor"/>
+  <circle cx="46" cy="22" r="2.3" fill="currentColor"/>
+
+  <!-- Forecast curve (dashed, smoother) -->
+  <path
+    d="M12 48
+       C20 46, 26 42, 32 38
+       S44 30, 52 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-dasharray="4 3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.85"
+  />
+</svg>

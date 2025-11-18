@@ -2,7 +2,7 @@
 title: "Part IV — AutoML & H2O via modeltime.h2o"
 ---
 
-# 24. H2O & AutoML for forecasting
+# H2O & AutoML for forecasting
 
 **Motivation**
 
@@ -10,11 +10,20 @@ Sometimes you want to search over many model classes automatically and get a str
 
 ---
 
-# 25. Initialising H2O
+# Initialising H2O
 
-```r
-library(h2o)
-library(modeltime.h2o)
+```{r}
+automl_available <- requireNamespace("modeltime.h2o", quietly = TRUE) &&
+  requireNamespace("h2o", quietly = TRUE)
+
+if (!automl_available) {
+  message("modeltime.h2o + h2o not installed; AutoML chunks will be displayed but not evaluated.")
+}
+```
+
+```{r, eval=automl_available}
+require(h2o, quietly=TRUE)
+require(modeltime.h2o, quietly=TRUE)
 
 h2o.init()
 ```
@@ -23,11 +32,11 @@ You can control memory and cluster size via arguments to `h2o.init()` if needed.
 
 ---
 
-# 26. A basic AutoML forecasting workflow
+# A basic AutoML forecasting workflow
 
 We reuse the `data_x` example with `y`, `date`, `promo`, and `price`.
 
-```r
+```{r, eval=automl_available}
 splits_x <- time_series_split(
   data_x,
   assess     = 90,
@@ -36,13 +45,21 @@ splits_x <- time_series_split(
 
 rec_h2o <- recipe(y ~ ., data = training(splits_x)) %>%
   step_timeseries_signature(date) %>%
-  step_rm(contains("hour"), contains("minute"), contains("second"), contains("am.pm")) %>%
+  step_rm(
+    date,
+    contains("hour"),
+    contains("minute"),
+    contains("second"),
+    contains("am.pm"),
+    contains("lbl")
+  ) %>%
+  step_zv(all_predictors()) %>%
   step_normalize(all_numeric_predictors())
 ```
 
 Specify an AutoML regression model:
 
-```r
+```{r, eval=automl_available}
 h2o_spec <- automl_reg(
   max_runtime_mins = 10,
   max_models       = 20,
@@ -53,7 +70,7 @@ h2o_spec <- automl_reg(
 
 Build workflow and fit:
 
-```r
+```{r, eval=automl_available}
 wf_h2o <- workflow() %>%
   add_recipe(rec_h2o) %>%
   add_model(h2o_spec)
@@ -64,7 +81,7 @@ fit_h2o <- wf_h2o %>%
 
 Evaluate:
 
-```r
+```{r, eval=automl_available}
 modeltime_table(fit_h2o) %>%
   modeltime_calibrate(testing(splits_x)) %>%
   modeltime_accuracy()
@@ -72,18 +89,30 @@ modeltime_table(fit_h2o) %>%
 
 Forecast:
 
-```r
-modeltime_table(fit_h2o) %>%
-  modeltime_calibrate(testing(splits_x)) %>%
+```{r, eval=automl_available}
+h2o_calib <- modeltime_table(fit_h2o) %>%
+  modeltime_calibrate(testing(splits_x))
+
+h2o_fc <- h2o_calib %>%
   modeltime_forecast(
     new_data    = testing(splits_x),
     actual_data = data_x
+  )
+
+h2o_fc
+```
+
+```{r, fig.cap="AutoML forecast (best H2O model) over the holdout window.", eval=automl_available}
+h2o_fc %>%
+  plot_modeltime_forecast(
+    .title = "H2O AutoML leader vs actuals",
+    .legend_max_width = 24
   )
 ```
 
 ---
 
-# 27. What H2O AutoML is doing under the hood
+# What H2O AutoML is doing under the hood
 
 - Splits the training data internally into training/validation.
 - Tries many model classes: GBM, Random Forest, GLM, deep learning, stacked ensembles, etc.
@@ -92,14 +121,14 @@ modeltime_table(fit_h2o) %>%
 
 For deeper inspection, you can access the underlying H2O objects:
 
-```r
+```{r, eval=automl_available}
 leaderboard <- h2o.get_leaderboard()
 leaderboard
 ```
 
 ---
 
-# 28. Time–series semantics & caveats
+# Time–series semantics & caveats
 
 **Important**
 
@@ -116,7 +145,7 @@ Guidelines:
 
 ---
 
-# 29. When to use H2O AutoML vs manual models
+# When to use H2O AutoML vs manual models
 
 **Use AutoML when:**
 

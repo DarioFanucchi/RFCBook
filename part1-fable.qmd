@@ -2,20 +2,27 @@
 title: "Part I — Forecasting with fable"
 ---
 
-# 1. Time series as tsibbles
+This part of the book covers forecasting with traditional statistical methods. A great book covering these topics in depth is [Forecasting: Principles and Practice](https://otexts.com/fpp3/ "Hyndman Forecasting Book") by Rob Hyndman.
+
+# Time series as tsibbles
 
 **Motivation**
 
 The fable ecosystem is built around the `tsibble` class: a tidy time–series structure with an explicit time index and (optionally) one or more keys. If your data is not in a tsibble, everything else becomes awkward.
 
-```r
-library(tsibble)
-library(feasts)
-library(fable)
+```{r}
+
+suppressWarnings(require(generics, quietly = TRUE))
+suppressWarnings(require(tsibble, quietly = TRUE))
+require(feasts, quietly = TRUE)
+require(fable, quietly = TRUE)
+require(fabletools, quietly = TRUE)
+require(ggplot2, quietly = TRUE)
+
 
 data <- tsibble(
   date  = as.Date("2020-01-01") + 0:729,
-  y     = sin(2*pi*(0:729)/7) + rnorm(730, 0, 0.2),
+  y     = sin(2*pi*(0:729)/7) + rnorm(730, 0, 0.2), # Sample data with weekly trend
   index = date
 )
 
@@ -24,35 +31,56 @@ data
 
 You now have a single daily series with 730 observations.
 
+```{r, fig.cap="Simulated daily series showing weekly seasonality."}
+autoplot(data, y) +
+  labs(
+    title = "Toy demand signal",
+    x = "Date",
+    y = "y"
+  ) + hiplot::theme_isazi(12)
+```
+
 ---
 
-# 2. Baseline forecasts: mean, naive, seasonal naive
+# Baseline forecasts: mean, naive, seasonal naive
 
 **Motivation**
 
 Good baselines are essential. Mean, naive, and seasonal–naive are trivial to compute but surprisingly hard to beat on some data. They also give you quick sanity checks.
 
-```r
-data %>%
+```{r}
+baseline_fc <- data %>%
   model(
     mean   = MEAN(y),
     naive  = NAIVE(y),
     snaive = SNAIVE(y)
   ) %>%
   forecast(h = "30 days")
+
+baseline_fc
 ```
 
 Each model returns a fable; you can bind, plot, and calculate accuracy with the same tools.
 
+```{r, fig.cap="Thirty–day forecasts from simple baseline models."}
+baseline_fc %>%
+  autoplot(data) +
+  labs(
+    title = "Mean, naive, and seasonal naive forecasts",
+    x = "Date",
+    y = "y"
+  ) + hiplot::theme_isazi(12)
+```
+
 ---
 
-# 3. ARIMA
+# ARIMA
 
 **Motivation**
 
 ARIMA (and seasonal ARIMA) is still a workhorse model, especially when you want a univariate, interpretable, statistically principled baseline.
 
-```r
+```{r}
 fit_arima <- data %>%
   model(arima = ARIMA(y))
 
@@ -60,17 +88,28 @@ report(fit_arima)
 fit_arima %>% forecast(h = "30 days")
 ```
 
+```{r, fig.cap="ARIMA forecast with 80% and 95% intervals."}
+fit_arima %>%
+  forecast(h = "30 days") %>%
+  autoplot(data) +
+  labs(
+    title = "ARIMA vs history",
+    x = "Date",
+    y = "y"
+  ) + hiplot::theme_isazi(12)
+```
+
 `ARIMA()` automatically identifies appropriate orders (including seasonal). `report()` gives you parameter estimates and diagnostics.
 
 ---
 
-# 4. ETS (Exponential Smoothing)
+# ETS (Exponential Smoothing)
 
 **Motivation**
 
 ETS models handle level, trend, and seasonality with explicit error formulations. They are robust and often perform very well on business series.
 
-```r
+```{r}
 fit_ets <- data %>%
   model(ets = ETS(y))
 
@@ -82,13 +121,13 @@ ETS models are often a strong alternative to ARIMA when seasonal patterns are st
 
 ---
 
-# 5. STL + ETS (decomposition–based forecasting)
+# STL + ETS (decomposition–based forecasting)
 
 **Motivation**
 
-Sometimes you want to separate trend/seasonality from the short–term noise, both for interpretability and modelling flexibility. STL decomposition plus ETS on the seasonally adjusted component is a powerful pattern.
+Sometimes you want to separate trend/seasonality from the short–term noise, both for interpretability and modelling flexibility. STL decomposition plus ETS on the seasonally adjusted component is a powerful pattern. 
 
-```r
+```{r}
 fit_stl <- data %>%
   model(
     stl_ets = decomposition_model(
@@ -98,21 +137,99 @@ fit_stl <- data %>%
   )
 
 fit_stl %>%
-  forecast(h = "30 days")
+  forecast(h = "30 days") %>% 
+  autoplot(data) +
+  labs(
+    title = "STL/ETS vs history",
+    x = "Date",
+    y = "y"
+  ) + hiplot::theme_isazi(12)
 ```
 
 Here STL extracts a weekly seasonal component; ETS models the seasonally adjusted series.
 
+```{r, fig.cap="STL decomposition separates trend and weekly seasonality."}
+data %>%
+  model(stl = STL(y ~ season(window = 7))) %>%
+  components() %>%
+  autoplot() +
+  labs(title = "STL components for the toy series") + 
+  hiplot::theme_isazi(12)
+```
+
 ---
 
-# 6. ARIMAX: regression with ARIMA errors
+# Double seasonality
+
+Real world data often has multiple seasonalities. Here's an example with weekly, monthly and annual seasonality:
+
+```{r}
+data_seas <- tsibble(
+  date  = as.Date("2020-01-01") + 0:729,
+  y     = sin(2*pi*(0:729)/7) + 3*sin(2*pi*(0:729)/31) + sin(2*pi*(0:729)/365) + rnorm(730, 0, 0.2), # Sample data with weekly, monthly, yearly trend
+  index = date
+)
+```
+
+You can extend `STL()` with multiple `season()` terms—one per seasonal period—and combine it with your preferred short-term model via `decomposition_model()`. Below, the seasonal components (weekly, monthly, annual) are stripped out and the remainder is forecast either with ETS or ARIMA:
+
+```{r}
+fit_multi_stl <- data_seas %>%
+  model(
+    stl_ets = decomposition_model(
+      STL(
+        y ~ trend(window = 365) +
+          season(period = 7, window = "periodic") +
+          season(period = 31, window = "periodic")
+      ),
+      ETS(season_adjust)
+    ),
+    stl_arima = decomposition_model(
+      STL(
+        y ~ trend(window = 365) +
+          season(period = 7, window = "periodic") +
+          season(period = 31, window = "periodic")
+      ),
+      ARIMA(season_adjust)
+    )
+  )
+```
+
+```{r, fig.cap="STL handles multiple seasonalities before ETS/ARIMA forecast the deseasonalised series."}
+fit_multi_stl %>%
+  forecast(h = "90 days") %>%
+  autoplot(data_seas) +
+  labs(
+    title = "Multi-seasonal STL + ETS/ARIMA forecasts",
+    x = "Date",
+    y = "y"
+  )
+```
+
+```{r, fig.cap="The STL decomposition explicitly isolates each seasonal component."}
+multi_stl_components <- data_seas %>%
+  model(
+    stl = STL(
+      y ~ trend(window = 365) +
+        season(period = 7, window = "periodic") +
+        season(period = 31, window = "periodic")
+    )
+  ) %>%
+  components()
+
+multi_stl_components %>%
+  autoplot() +
+  labs(title = "Weekly, monthly, and annual components via STL")
+```
+
+# ARIMAX: regression with ARIMA errors
 
 **Motivation**
 
 Most real–world forecasting problems need exogenous drivers: price, promotions, macro variables, events, etc. ARIMAX (regression with ARIMA errors) is the classical tool for this.
 
-```r
-library(dplyr)
+```{r}
+require(dplyr, quietly = TRUE)
 
 data_x <- data %>%
   mutate(promo = rbinom(n(), 1, 0.1))
@@ -139,13 +256,13 @@ You can add more regressors (price, other features) in the same way.
 
 ---
 
-# 7. Multiple series with keys
+# Multiple series with keys
 
 **Motivation**
 
 In retail and operations, you rarely have a single series. You typically have thousands (SKU × store × region). fable’s key semantics let you fit one model per series with identical code.
 
-```r
+```{r}
 data_multi <- tsibble(
   id   = rep(letters[1:5], each = 730),
   date = rep(as.Date("2020-01-01") + 0:729, 5),
@@ -165,13 +282,13 @@ Each key (`id`) gets its own ARIMA model. You can still summarise accuracy and f
 
 ---
 
-# 8. Hierarchies & reconciliation (including MinT)
+# Hierarchies & reconciliation (including MinT)
 
 **Motivation**
 
 Hierarchical and grouped time series (e.g. SKU → brand → category → region → country) require *coherent* forecasts: children should add up to parents. Reconciliation methods adjust a set of base forecasts to satisfy aggregation constraints while staying close to the originals.
 
-## 8.1 Conceptual view
+## Conceptual view
 
 Stack all series at time *t* into a vector **y**ₜ. There exists a summing matrix **S** such that
 
@@ -209,22 +326,25 @@ Intuition:
 
 In practice, fable estimates **W** from in–sample residuals and performs this matrix algebra for you.
 
-## 8.2 Using reconciliation in fable
+## Using reconciliation in fable
 
-```r
-library(fabletools)
-library(tsibbledata)
+```{r}
+require(fabletools, quietly = TRUE)
+require(tsibbledata, quietly = TRUE)
 
 tourism <- tourism  # key = (Region, Purpose)
+tourism_small <- tourism %>%
+  filter(
+    Region %in% c("Sydney", "Melbourne", "Brisbane", "Perth"),
+    Purpose %in% c("Business", "Holiday")
+  )
 
-fit <- tourism %>%
+fit <- tourism_small %>%
   model(ets = ETS(Trips))
 
 rec <- fit %>%
   reconcile(
-    bu   = bottom_up(ets),
-    mint = min_trace(ets),
-    mint_shr = min_trace(ets, method = "mint_shrink")
+    bu = bottom_up(ets)
   )
 
 fc <- rec %>%
@@ -235,16 +355,32 @@ Guidelines:
 
 - **bottom_up()**: use when bottom–level series are well measured and you care most about them.
 - **min_trace() / mint_shrink**: use when you want balanced accuracy across levels, and when noise at the bottom is substantial.
+- (Omitted from the runnable example for speed, but you can add `min_trace(ets)` or `min_trace(ets, method = "mint_shrink")` in the `reconcile()` call above to try MinT.)
+
+```{r, fig.cap="Reconciled forecasts for Sydney holiday travel across reconciliation strategies."}
+fc %>%
+  filter(Region == "Sydney", Purpose == "Holiday") %>%
+  autoplot(
+    tourism_small %>%
+      filter(Region == "Sydney", Purpose == "Holiday")
+  ) +
+  labs(
+    title = "Sydney holiday forecasts: base ETS vs bottom-up",
+    x = "Year",
+    y = "Trips"
+  ) + 
+  hiplot::theme_isazi(12)
+```
 
 ---
 
-# 9. Rolling–origin evaluation (tscv)
+# Rolling–origin evaluation (tscv)
 
 **Motivation**
 
 A single train/test split can be misleading in time series. Rolling–origin (or “time series cross–validation”) repeatedly trains on expanding windows and evaluates a fixed horizon ahead.
 
-```r
+```{r}
 cv <- data %>%
   stretch_tsibble(.init = 365, .step = 30)
 
@@ -259,13 +395,13 @@ Each row of the stretched tsibble represents one training window; `forecast(h = 
 
 ---
 
-# 10. Combining forecasts
+# Combining forecasts
 
 **Motivation**
 
 Forecast combinations are cheap and often yield gains over any single model. Even simple averages can be very effective.
 
-```r
+```{r}
 fit <- data %>%
   model(
     arima = ARIMA(y),
