@@ -1,0 +1,26 @@
+project:
+  type: book
+  output-dir: docs
+  resources:
+    - "*.pdf"
+
+book:
+  title: "Practical Forecasting in R with fable & modeltime"
+  author: "Dario Fanucchi"
+  repo-url: https://github.com/DarioFanucchi/RFCBook
+  repo-actions: [issue, source]
+  downloads: ["pdf"]
+  page-navigation: true
+  chapters:
+    - index.qmd
+    - part1-fable.qmd
+    - part2-modeltime.qmd
+    - part3-extensions.qmd
+    - part4-automl-h2o.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+  pdf:
+    documentclass: scrreprt

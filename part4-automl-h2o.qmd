@@ -1,0 +1,138 @@
+---
+title: "Part IV — AutoML & H2O via modeltime.h2o"
+---
+
+# 24. H2O & AutoML for forecasting
+
+**Motivation**
+
+Sometimes you want to search over many model classes automatically and get a strong baseline without hand–tuning. **H2O AutoML** is a mature AutoML system for tabular data. `modeltime.h2o` plugs it into the modeltime workflow, giving you AutoML–style model search while keeping time–series semantics in your resampling and features.
+
+---
+
+# 25. Initialising H2O
+
+```r
+library(h2o)
+library(modeltime.h2o)
+
+h2o.init()
+```
+
+You can control memory and cluster size via arguments to `h2o.init()` if needed.
+
+---
+
+# 26. A basic AutoML forecasting workflow
+
+We reuse the `data_x` example with `y`, `date`, `promo`, and `price`.
+
+```r
+splits_x <- time_series_split(
+  data_x,
+  assess     = 90,
+  cumulative = TRUE
+)
+
+rec_h2o <- recipe(y ~ ., data = training(splits_x)) %>%
+  step_timeseries_signature(date) %>%
+  step_rm(contains("hour"), contains("minute"), contains("second"), contains("am.pm")) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+Specify an AutoML regression model:
+
+```r
+h2o_spec <- automl_reg(
+  max_runtime_mins = 10,
+  max_models       = 20,
+  seed             = 123
+) %>%
+  set_engine("h2o")
+```
+
+Build workflow and fit:
+
+```r
+wf_h2o <- workflow() %>%
+  add_recipe(rec_h2o) %>%
+  add_model(h2o_spec)
+
+fit_h2o <- wf_h2o %>%
+  fit(training(splits_x))
+```
+
+Evaluate:
+
+```r
+modeltime_table(fit_h2o) %>%
+  modeltime_calibrate(testing(splits_x)) %>%
+  modeltime_accuracy()
+```
+
+Forecast:
+
+```r
+modeltime_table(fit_h2o) %>%
+  modeltime_calibrate(testing(splits_x)) %>%
+  modeltime_forecast(
+    new_data    = testing(splits_x),
+    actual_data = data_x
+  )
+```
+
+---
+
+# 27. What H2O AutoML is doing under the hood
+
+- Splits the training data internally into training/validation.
+- Tries many model classes: GBM, Random Forest, GLM, deep learning, stacked ensembles, etc.
+- Ranks them on a validation metric (e.g. RMSE or MAE).
+- Returns a “leader” model that is exposed through the modeltime interface.
+
+For deeper inspection, you can access the underlying H2O objects:
+
+```r
+leaderboard <- h2o.get_leaderboard()
+leaderboard
+```
+
+---
+
+# 28. Time–series semantics & caveats
+
+**Important**
+
+H2O AutoML itself does **not** understand time. It sees a supervised regression problem. The time–series semantics come from:
+
+- How you create features (lags, rolling stats, time signatures, promo/price variables).
+- How you split and resample data (`time_series_split()`, `time_series_cv()`).
+
+Guidelines:
+
+- Always use **time–based splits** for evaluation.
+- Prefer to handle leakage–sensitive operations (like scaling and lagging) via recipes or timetk, not inside AutoML.
+- Be cautious with automatic random CV inside H2O; keep your main validation loop in your R/rsample layer.
+
+---
+
+# 29. When to use H2O AutoML vs manual models
+
+**Use AutoML when:**
+
+- You want a strong baseline quickly.
+- You’re exploring a new dataset and want to know what is achievable.
+- You’re happy with a “black–box-ish” model bundle and care more about accuracy than fine control.
+
+**Use manual models (fable/modeltime) when:**
+
+- You want explicit control over model class and structure (e.g. ARIMAX vs XGBoost vs DeepAR).
+- Interpretability and diagnostics matter (especially in trade/revenue discussions).
+- You have custom constraints or loss functions that AutoML does not support.
+
+In practice, a good pattern is:
+
+1. Start with **fable** models and naive baselines for sanity.
+2. Add **modeltime** global ML models (e.g. XGBoost / LightGBM) with well–engineered features.
+3. Use **H2O AutoML** as an additional candidate in your modeltime ensembles.
+4. Select the combination that works best across your backtests and business constraints.

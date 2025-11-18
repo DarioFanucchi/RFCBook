@@ -1,0 +1,192 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Practical Forecasting in R with fable & modeltime",
+    "section": "",
+    "text": "This book is a compact, opinionated guide to modern time series forecasting in R, with a focus on:\n\nClassical, statistically principled methods using the fable ecosystem.\nMachine–learning–style forecasting using modeltime, tidymodels, and friends.\nPractical extensions for retail and supply–chain–flavoured data: promotions, prices, hierarchies, and global models.\nOptional AutoML and scalable modelling using H2O.\n\nThe style is example–led: every concept is tied to runnable R code.\nYou can read it straight through, or jump to the part that matches how you work today:\n\nPart I: fable\nPart II: modeltime + tidymodels\nPart III: Extensions (promos, hierarchies, feature engineering, global vs per–SKU)\nPart IV: AutoML with H2O",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Practical Forecasting in R with fable & modeltime</span>"
+    ]
+  },
+  {
+    "objectID": "part1-fable.html",
+    "href": "part1-fable.html",
+    "title": "2  Part I — Forecasting with fable",
+    "section": "",
+    "text": "3 1. Time series as tsibbles\nMotivation\nThe fable ecosystem is built around the tsibble class: a tidy time–series structure with an explicit time index and (optionally) one or more keys. If your data is not in a tsibble, everything else becomes awkward.\nYou now have a single daily series with 730 observations.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Part I — Forecasting with fable</span>"
+    ]
+  },
+  {
+    "objectID": "part1-fable.html#conceptual-view",
+    "href": "part1-fable.html#conceptual-view",
+    "title": "2  Part I — Forecasting with fable",
+    "section": "10.1 8.1 Conceptual view",
+    "text": "10.1 8.1 Conceptual view\nStack all series at time t into a vector yₜ. There exists a summing matrix S such that\n\\[\n\\mathbf{y}_t = \\mathbf{S} \\, \\mathbf{b}_t\n\\]\nwhere bₜ are the bottom–level series (e.g., SKUs).\nIf you fit arbitrary models to each series, you obtain base forecasts \\(\\hat{\\mathbf{y}}_h\\) that in general are not coherent.\nReconciliation finds adjusted forecasts\n\\[\n\\tilde{\\mathbf{y}}_h = \\mathbf{S} \\, \\mathbf{P} \\, \\hat{\\mathbf{y}}^{[b]}_h\n\\]\nsuch that:\n\nCoherence holds by construction (aggregation uses S).\nThe adjustments are optimal according to some criterion.\n\nMinT (“Minimum Trace”) chooses P to minimise the trace of the reconciled error covariance, using an estimate of the base forecast error covariance matrix W.\nIn one common parameterisation:\n\\[\n\\tilde{\\mathbf{y}}_h = \\mathbf{S} (\\mathbf{S}^\\top \\mathbf{W}^{-1} \\mathbf{S})^{-1} \\mathbf{S}^\\top \\mathbf{W}^{-1} \\hat{\\mathbf{y}}_h\n\\]\nIntuition:\n\nSeries with high variance forecasts get shrunk more towards coherent aggregates.\nSeries whose errors are highly correlated with others share information more strongly.\n\nIn practice, fable estimates W from in–sample residuals and performs this matrix algebra for you.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Part I — Forecasting with fable</span>"
+    ]
+  },
+  {
+    "objectID": "part1-fable.html#using-reconciliation-in-fable",
+    "href": "part1-fable.html#using-reconciliation-in-fable",
+    "title": "2  Part I — Forecasting with fable",
+    "section": "10.2 8.2 Using reconciliation in fable",
+    "text": "10.2 8.2 Using reconciliation in fable\nlibrary(fabletools)\nlibrary(tsibbledata)\n\ntourism &lt;- tourism  # key = (Region, Purpose)\n\nfit &lt;- tourism %&gt;%\n  model(ets = ETS(Trips))\n\nrec &lt;- fit %&gt;%\n  reconcile(\n    bu   = bottom_up(ets),\n    mint = min_trace(ets),\n    mint_shr = min_trace(ets, method = \"mint_shrink\")\n  )\n\nfc &lt;- rec %&gt;%\n  forecast(h = \"3 years\")\nGuidelines:\n\nbottom_up(): use when bottom–level series are well measured and you care most about them.\nmin_trace() / mint_shrink: use when you want balanced accuracy across levels, and when noise at the bottom is substantial.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Part I — Forecasting with fable</span>"
+    ]
+  },
+  {
+    "objectID": "part2-modeltime.html",
+    "href": "part2-modeltime.html",
+    "title": "3  Part II — Forecasting with modeltime & tidymodels",
+    "section": "",
+    "text": "4 11. Time series splits & the ML mindset\nMotivation\nMachine–learning–style forecasting treats time series as supervised learning with strong temporal structure. The critical decision is the evaluation protocol; you must respect time when you split data.\nlibrary(tidymodels)\nlibrary(modeltime)\nlibrary(timetk)\n\ndata &lt;- tibble(\n  date = as.Date(\"2020-01-01\") + 0:729,\n  y    = sin(2*pi*(0:729)/7) + rnorm(730, 0, 0.2)\n)\n\nsplits &lt;- time_series_split(\n  data,\n  assess     = 90,\n  cumulative = TRUE\n)\n\ntraining(splits) gives history up to the cutoff.\ntesting(splits) gives the final 90 days for evaluation.\n\n\n\n\n5 12. A basic XGBoost forecast\nMotivation\nGradient–boosted trees (XGBoost, LightGBM, CatBoost) are state of the art in many retail forecasting benchmarks when combined with good feature engineering.\nrec &lt;- recipe(y ~ date, data = training(splits)) %&gt;%\n  step_timeseries_signature(date) %&gt;%\n  step_rm(contains(\"hour\"), contains(\"minute\"), contains(\"second\"), contains(\"am.pm\")) %&gt;%\n  step_normalize(all_numeric_predictors())\n\nxgb_spec &lt;- boost_tree(\n  trees      = 2000,\n  learn_rate = 0.03,\n  tree_depth = 8\n) %&gt;%\n  set_engine(\"xgboost\") %&gt;%\n  set_mode(\"regression\")\n\nwf_xgb &lt;- workflow() %&gt;%\n  add_recipe(rec) %&gt;%\n  add_model(xgb_spec)\n\nfit_xgb &lt;- fit(wf_xgb, training(splits))\nForecast and evaluate:\nxgb_tbl &lt;- modeltime_table(fit_xgb)\n\nxgb_tbl %&gt;%\n  modeltime_calibrate(testing(splits)) %&gt;%\n  modeltime_forecast(\n    new_data    = testing(splits),\n    actual_data = data\n  )\n\n\n\n6 13. Adding a classical ARIMA baseline\nMotivation\nEven when you believe ML will win, you should verify it beats a decent statistical model.\nfit_arima &lt;- workflow() %&gt;%\n  add_recipe(rec) %&gt;%\n  add_model(\n    arima_reg() %&gt;%\n      set_engine(\"auto_arima\")\n  ) %&gt;%\n  fit(training(splits))\n\nmodel_tbl &lt;- modeltime_table(\n  fit_xgb,\n  fit_arima\n)\n\nmodel_tbl %&gt;%\n  modeltime_calibrate(testing(splits)) %&gt;%\n  modeltime_accuracy()\nYou now have side–by–side accuracy for ML and classical methods.\n\n\n\n7 14. Exogenous regressors: promos, prices, features\nMotivation\nMachine–learning models handle many regressors naturally. This is key for retail and supply–chain: promotions, prices, macro variables, calendar features, etc.\nset.seed(1)\n\ndata_x &lt;- data %&gt;%\n  mutate(\n    promo = rbinom(n(), 1, 0.1),\n    price = runif(n(), 9, 12)\n  )\n\nsplits_x &lt;- time_series_split(\n  data_x,\n  assess     = 90,\n  cumulative = TRUE\n)\n\nrec_x &lt;- recipe(y ~ ., data = training(splits_x)) %&gt;%\n  step_timeseries_signature(date) %&gt;%\n  step_rm(contains(\"hour\"), contains(\"minute\"), contains(\"second\"), contains(\"am.pm\")) %&gt;%\n  step_normalize(all_numeric_predictors())\n\nwf_xgb_x &lt;- workflow() %&gt;%\n  add_recipe(rec_x) %&gt;%\n  add_model(xgb_spec)\n\nfit_xgb_x &lt;- fit(wf_xgb_x, training(splits_x))\nYou can interpret feature importance with packages like vip, DALEX, or iml.\n\n\n\n8 15. Time–aware hyperparameter tuning\nMotivation\nIf you tune XGBoost with random cross–validation, you leak future information. Instead, use time–series CV (rolling origin) for tuning.\ncv_folds &lt;- time_series_cv(\n  data_x,\n  assess     = 90,\n  skip       = 30,\n  cumulative = TRUE\n)\n\ntuned &lt;- tune_grid(\n  wf_xgb_x,\n  resamples = cv_folds,\n  grid      = 20,\n  control   = control_grid(verbose = TRUE)\n)\n\nbest &lt;- select_best(tuned, \"rmse\")\n\nfinal_wf &lt;- finalize_workflow(wf_xgb_x, best)\nfit_final &lt;- fit(final_wf, data_x)\nThe tuned workflow can then be used in modeltime_table() and productionised.\n\n\n\n9 16. Ensembles in modeltime\nMotivation\nEnsembling multiple models (ML + classical) often yields robustness and extra accuracy at very low marginal cost.\nmodel_tbl &lt;- modeltime_table(\n  fit_xgb_x,\n  fit_arima\n)\n\nensemble &lt;- model_tbl %&gt;%\n  ensemble_average(type = \"mean\")\n\nensemble %&gt;%\n  modeltime_calibrate(testing(splits_x)) %&gt;%\n  modeltime_accuracy()\nYou can also use weighted ensembles or meta–learners via stacks.\n\n\n\n10 17. Global models across many series\nMotivation\nGlobal models train one model across many series (e.g. SKUs, depots, stores), often outperforming per–series models when data is sparse.\ndata_panel &lt;- tibble(\n  sku   = rep(letters[1:20], each = 730),\n  date  = rep(as.Date(\"2020-01-01\") + 0:729, 20),\n  y     = rnorm(20 * 730) + as.numeric(as.factor(sku)) * 0.2,\n  promo = rbinom(20 * 730, 1, 0.1),\n  price = runif(20 * 730, 9, 12)\n)\n\nsplits_panel &lt;- time_series_split(\n  data_panel,\n  assess     = 90,\n  cumulative = TRUE\n)\n\nrec_panel &lt;- recipe(y ~ sku + date + promo + price,\n                    data = training(splits_panel)) %&gt;%\n  step_timeseries_signature(date) %&gt;%\n  step_dummy(all_nominal_predictors()) %&gt;%\n  step_normalize(all_numeric_predictors())\n\nwf_global &lt;- workflow() %&gt;%\n  add_recipe(rec_panel) %&gt;%\n  add_model(xgb_spec)\n\nfit_global &lt;- fit(wf_global, training(splits_panel))\nThis XGBoost model learns patterns shared across SKUs and depots.\n\n\n\n11 18. Prophet in modeltime\nMotivation\nProphet is a popular model for business time series with strong seasonal patterns and holiday effects. modeltime wraps it in the same interface as your other models.\nlibrary(prophet)\n\nprop_spec &lt;- prophet_reg(\n  seasonality_yearly = TRUE,\n  seasonality_weekly = TRUE,\n  seasonality_daily  = FALSE,\n  changepoint_num    = 25,\n  changepoint_range  = 0.9\n) %&gt;%\n  set_engine(\"prophet\")\n\nrec_prophet &lt;- recipe(y ~ date, data = training(splits))  # Prophet needs date and y\n\nwf_prophet &lt;- workflow() %&gt;%\n  add_recipe(rec_prophet) %&gt;%\n  add_model(prop_spec)\n\nfit_prophet &lt;- fit(wf_prophet, training(splits))\nProphet with extra regressors:\nrec_prophet_x &lt;- recipe(y ~ date + promo + price,\n                        data = training(splits_x)) %&gt;%\n  step_mutate(\n    promo = as.numeric(promo),\n    price = price\n  )\n\nfit_prophet_x &lt;- workflow() %&gt;%\n  add_recipe(rec_prophet_x) %&gt;%\n  add_model(prop_spec) %&gt;%\n  fit(training(splits_x))\nBoosted Prophet (prophet_boost()) adds a gradient–boosting component on Prophet’s residuals; the interface is analogous, with set_engine(\"prophet_xgboost\").",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Part II — Forecasting with modeltime & tidymodels</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html",
+    "href": "part3-extensions.html",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "",
+    "text": "5 19. Advanced timetk usage\nMotivation\ntimetk is a powerful toolkit for time–based feature engineering, visualisation, and cross–validation. It plays very nicely with both tidymodels and direct data–frame workflows.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#time-series-signatures",
+    "href": "part3-extensions.html#time-series-signatures",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "5.1 19.1 Time series signatures",
+    "text": "5.1 19.1 Time series signatures\nYou can generate time–based features directly, without recipes:\nlibrary(timetk)\n\ndata_sig &lt;- data %&gt;%\n  tk_augment_timeseries_signature(date) %&gt;%\n  select(-contains(\"hour\"), -contains(\"minute\"),\n         -contains(\"second\"), -contains(\"am.pm\"))\nThis yields fields like year, month, week, day of week, quarter, etc.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#lags-and-sliding-windows",
+    "href": "part3-extensions.html#lags-and-sliding-windows",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "5.2 19.2 Lags and sliding windows",
+    "text": "5.2 19.2 Lags and sliding windows\ndata_lags &lt;- data_sig %&gt;%\n  tk_augment_lags(y, .lags = c(1, 7, 14))\n\ndata_roll &lt;- data_lags %&gt;%\n  tk_augment_slidify(\n    .value  = y,\n    .f      = ~ mean(.x, na.rm = TRUE),\n    .period = 7,\n    .align  = \"right\",\n    .partial = FALSE,\n    .names  = \"roll_mean_7\"\n  )\nThis produces lagged versions of y and a rolling 7–day mean.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#visualising-timeseries-cv-plans",
+    "href": "part3-extensions.html#visualising-timeseries-cv-plans",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "5.3 19.3 Visualising time–series CV plans",
+    "text": "5.3 19.3 Visualising time–series CV plans\ncv_plan &lt;- time_series_cv(\n  data,\n  assess     = 90,\n  skip       = 30,\n  cumulative = TRUE\n)\n\ncv_plan %&gt;%\n  tk_time_series_cv_plan() %&gt;%\n  plot_time_series_cv_plan(\n    .date_var = date,\n    .value    = y\n  )\nThis allows you to inspect your rolling window splits visually and confirm they make sense.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#arimax-in-fable-for-promo-price",
+    "href": "part3-extensions.html#arimax-in-fable-for-promo-price",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "6.1 20.1 ARIMAX in fable for promo & price",
+    "text": "6.1 20.1 ARIMAX in fable for promo & price\ndata_retail &lt;- tsibble(\n  date   = as.Date(\"2020-01-01\") + 0:729,\n  sales  = rpois(730, 100),\n  promo  = rbinom(730, 1, 0.1),\n  price  = runif(730, 9, 12),\n  index  = date\n)\n\nfit_arimax &lt;- data_retail %&gt;%\n  model(\n    arimax = ARIMA(sales ~ promo + price)\n  )\n\nfit_arimax %&gt;% report()\nInterpretation:\n\nCoefficient on promo ≈ average incremental units during promo.\nCoefficient on price ≈ price elasticity (units per price unit); often negative.\n\nYou can add lags and interactions, e.g. promo + lag(promo) + price + promo:holiday_flag.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#ml-global-model-for-promos-price",
+    "href": "part3-extensions.html#ml-global-model-for-promos-price",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "6.2 20.2 ML global model for promos & price",
+    "text": "6.2 20.2 ML global model for promos & price\ndata_panel &lt;- tibble(\n  sku   = rep(letters[1:20], each = 730),\n  date  = rep(as.Date(\"2020-01-01\") + 0:729, 20),\n  sales = rpois(20 * 730, 100),\n  promo = rbinom(20 * 730, 1, 0.1),\n  price = runif(20 * 730, 9, 12)\n)\n\nsplits_p &lt;- time_series_split(\n  data_panel,\n  assess     = 90,\n  cumulative = TRUE\n)\n\nrec_promos &lt;- recipe(sales ~ sku + date + promo + price,\n                     data = training(splits_p)) %&gt;%\n  step_timeseries_signature(date) %&gt;%\n  step_dummy(all_nominal_predictors()) %&gt;%\n  step_normalize(all_numeric_predictors())\n\nwf_promos &lt;- workflow() %&gt;%\n  add_recipe(rec_promos) %&gt;%\n  add_model(xgb_spec)\n\nfit_promos &lt;- fit(wf_promos, training(splits_p))\nFor cannibalisation, you precompute features such as:\n\ncategory_sales_ex_sku\nbrand_sales\ncompetitor_price\n\nvia group–by / lag operations, then feed into the recipe.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#timebased-features",
+    "href": "part3-extensions.html#timebased-features",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "7.1 21.1 Time–based features",
+    "text": "7.1 21.1 Time–based features\n\nstep_timeseries_signature(date) or tk_augment_timeseries_signature().\nFourier terms for long seasonalities (e.g. yearly with daily data).",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#lags-rolling-statistics",
+    "href": "part3-extensions.html#lags-rolling-statistics",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "7.2 21.2 Lags & rolling statistics",
+    "text": "7.2 21.2 Lags & rolling statistics\nIn recipes:\nrec_lags &lt;- rec %&gt;%\n  step_lag(y, lag = c(1, 7, 14)) %&gt;%\n  step_roll_mean(y, lag = 7, window = 7,\n                 align = \"right\", id = \"roll_mean_7\") %&gt;%\n  step_roll_sd(y, lag = 7, window = 7,\n               align = \"right\", id = \"roll_sd_7\")\nThese capture local dynamics that trees exploit well.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#calendar-holiday-features",
+    "href": "part3-extensions.html#calendar-holiday-features",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "7.3 21.3 Calendar & holiday features",
+    "text": "7.3 21.3 Calendar & holiday features\nUse step_holiday() or precomputed holiday tables to add dummies for important days, long weekends, etc.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#price-promoderived-features",
+    "href": "part3-extensions.html#price-promoderived-features",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "7.4 21.4 Price & promo–derived features",
+    "text": "7.4 21.4 Price & promo–derived features\nExamples:\n\ndiscount_pct = pmax(0, (list_price - price) / list_price)\npromo_flag = as.integer(discount_pct &gt; 0.1)\nprice_index vs category average.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#crossseries-interaction-features",
+    "href": "part3-extensions.html#crossseries-interaction-features",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "7.5 21.5 Cross–series interaction features",
+    "text": "7.5 21.5 Cross–series interaction features\nUse group–by / summarise to compute, for each date and category:\n\ncategory_sales\n\ncategory_sales_ex_sku\n\ntop_brand_share\n\nThen join back to the main table and feed into your recipe.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#persku-arima-fable",
+    "href": "part3-extensions.html#persku-arima-fable",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "8.1 22.1 Per–SKU ARIMA (fable)",
+    "text": "8.1 22.1 Per–SKU ARIMA (fable)\nts_panel &lt;- as_tsibble(\n  data_panel,\n  key   = sku,\n  index = date\n)\n\nsplit_date &lt;- as.Date(\"2021-12-31\")\n\ntrain_ts &lt;- ts_panel %&gt;%\n  filter(date &lt;= split_date)\n\ntest_ts &lt;- ts_panel %&gt;%\n  filter(date &gt; split_date)\n\nfit_per &lt;- train_ts %&gt;%\n  model(arima = ARIMA(sales))\n\nfc_per &lt;- fit_per %&gt;%\n  forecast(h = n_distinct(test_ts$date))\n\nacc_per &lt;- fc_per %&gt;%\n  accuracy(test_ts, by = \"sku\") %&gt;%\n  select(sku, rmse_per = RMSE)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part3-extensions.html#global-xgboost-modeltime",
+    "href": "part3-extensions.html#global-xgboost-modeltime",
+    "title": "4  Part III — Extensions, retail patterns & feature engineering",
+    "section": "8.2 22.2 Global XGBoost (modeltime)",
+    "text": "8.2 22.2 Global XGBoost (modeltime)\nsplits_panel &lt;- time_series_split(\n  data_panel,\n  assess     = sum(data_panel$date &gt; split_date),\n  cumulative = TRUE\n)\n\nrec_global &lt;- recipe(sales ~ sku + date + promo + price,\n                     data = training(splits_panel)) %&gt;%\n  step_timeseries_signature(date) %&gt;%\n  step_dummy(all_nominal_predictors()) %&gt;%\n  step_normalize(all_numeric_predictors())\n\nwf_global &lt;- workflow() %&gt;%\n  add_recipe(rec_global) %&gt;%\n  add_model(xgb_spec)\n\nfit_global &lt;- fit(wf_global, training(splits_panel))\n\nfc_global &lt;- modeltime_table(fit_global) %&gt;%\n  modeltime_calibrate(testing(splits_panel)) %&gt;%\n  modeltime_forecast(\n    new_data    = testing(splits_panel),\n    actual_data = data_panel\n  )\nMap to per–SKU RMSE:\nlibrary(dplyr)\nlibrary(yardstick)\n\nacc_global &lt;- fc_global %&gt;%\n  group_by(sku) %&gt;%\n  summarise(\n    rmse_global = rmse_vec(truth = .value, estimate = .pred)\n  )\n\ncomparison &lt;- acc_per %&gt;%\n  left_join(acc_global, by = \"sku\") %&gt;%\n  mutate(diff = rmse_per - rmse_global)\nYou can now see how many SKUs prefer global vs per–SKU models and by how much.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Part III — Extensions, retail patterns & feature engineering</span>"
+    ]
+  },
+  {
+    "objectID": "part4-automl-h2o.html",
+    "href": "part4-automl-h2o.html",
+    "title": "5  Part IV — AutoML & H2O via modeltime.h2o",
+    "section": "",
+    "text": "6 24. H2O & AutoML for forecasting\nMotivation\nSometimes you want to search over many model classes automatically and get a strong baseline without hand–tuning. H2O AutoML is a mature AutoML system for tabular data. modeltime.h2o plugs it into the modeltime workflow, giving you AutoML–style model search while keeping time–series semantics in your resampling and features.\n\n\n\n7 25. Initialising H2O\nlibrary(h2o)\nlibrary(modeltime.h2o)\n\nh2o.init()\nYou can control memory and cluster size via arguments to h2o.init() if needed.\n\n\n\n8 26. A basic AutoML forecasting workflow\nWe reuse the data_x example with y, date, promo, and price.\nsplits_x &lt;- time_series_split(\n  data_x,\n  assess     = 90,\n  cumulative = TRUE\n)\n\nrec_h2o &lt;- recipe(y ~ ., data = training(splits_x)) %&gt;%\n  step_timeseries_signature(date) %&gt;%\n  step_rm(contains(\"hour\"), contains(\"minute\"), contains(\"second\"), contains(\"am.pm\")) %&gt;%\n  step_normalize(all_numeric_predictors())\nSpecify an AutoML regression model:\nh2o_spec &lt;- automl_reg(\n  max_runtime_mins = 10,\n  max_models       = 20,\n  seed             = 123\n) %&gt;%\n  set_engine(\"h2o\")\nBuild workflow and fit:\nwf_h2o &lt;- workflow() %&gt;%\n  add_recipe(rec_h2o) %&gt;%\n  add_model(h2o_spec)\n\nfit_h2o &lt;- wf_h2o %&gt;%\n  fit(training(splits_x))\nEvaluate:\nmodeltime_table(fit_h2o) %&gt;%\n  modeltime_calibrate(testing(splits_x)) %&gt;%\n  modeltime_accuracy()\nForecast:\nmodeltime_table(fit_h2o) %&gt;%\n  modeltime_calibrate(testing(splits_x)) %&gt;%\n  modeltime_forecast(\n    new_data    = testing(splits_x),\n    actual_data = data_x\n  )\n\n\n\n9 27. What H2O AutoML is doing under the hood\n\nSplits the training data internally into training/validation.\nTries many model classes: GBM, Random Forest, GLM, deep learning, stacked ensembles, etc.\nRanks them on a validation metric (e.g. RMSE or MAE).\nReturns a “leader” model that is exposed through the modeltime interface.\n\nFor deeper inspection, you can access the underlying H2O objects:\nleaderboard &lt;- h2o.get_leaderboard()\nleaderboard\n\n\n\n10 28. Time–series semantics & caveats\nImportant\nH2O AutoML itself does not understand time. It sees a supervised regression problem. The time–series semantics come from:\n\nHow you create features (lags, rolling stats, time signatures, promo/price variables).\nHow you split and resample data (time_series_split(), time_series_cv()).\n\nGuidelines:\n\nAlways use time–based splits for evaluation.\nPrefer to handle leakage–sensitive operations (like scaling and lagging) via recipes or timetk, not inside AutoML.\nBe cautious with automatic random CV inside H2O; keep your main validation loop in your R/rsample layer.\n\n\n\n\n11 29. When to use H2O AutoML vs manual models\nUse AutoML when:\n\nYou want a strong baseline quickly.\nYou’re exploring a new dataset and want to know what is achievable.\nYou’re happy with a “black–box-ish” model bundle and care more about accuracy than fine control.\n\nUse manual models (fable/modeltime) when:\n\nYou want explicit control over model class and structure (e.g. ARIMAX vs XGBoost vs DeepAR).\nInterpretability and diagnostics matter (especially in trade/revenue discussions).\nYou have custom constraints or loss functions that AutoML does not support.\n\nIn practice, a good pattern is:\n\nStart with fable models and naive baselines for sanity.\nAdd modeltime global ML models (e.g. XGBoost / LightGBM) with well–engineered features.\nUse H2O AutoML as an additional candidate in your modeltime ensembles.\nSelect the combination that works best across your backtests and business constraints.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Part IV — AutoML & H2O via modeltime.h2o</span>"
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+---
+title: "Practical Forecasting in R with fable & modeltime"
+subtitle: "A short, example–driven book"
+---
+
+This book is a compact, opinionated guide to modern time series forecasting in R, with a focus on:
+
+- Classical, statistically principled methods using the **fable** ecosystem.
+- Machine–learning–style forecasting using **modeltime**, **tidymodels**, and friends.
+- Practical extensions for retail and supply–chain–flavoured data: promotions, prices, hierarchies, and global models.
+- Optional **AutoML** and scalable modelling using **H2O**.
+
+The style is example–led: every concept is tied to runnable R code.
+
+You can read it straight through, or jump to the part that matches how you work today:
+
+- Part I: fable
+- Part II: modeltime + tidymodels
+- Part III: Extensions (promos, hierarchies, feature engineering, global vs per–SKU)
+- Part IV: AutoML with H2O

@@ -1,0 +1,285 @@
+---
+title: "Part I — Forecasting with fable"
+---
+
+# 1. Time series as tsibbles
+
+**Motivation**
+
+The fable ecosystem is built around the `tsibble` class: a tidy time–series structure with an explicit time index and (optionally) one or more keys. If your data is not in a tsibble, everything else becomes awkward.
+
+```r
+library(tsibble)
+library(feasts)
+library(fable)
+
+data <- tsibble(
+  date  = as.Date("2020-01-01") + 0:729,
+  y     = sin(2*pi*(0:729)/7) + rnorm(730, 0, 0.2),
+  index = date
+)
+
+data
+```
+
+You now have a single daily series with 730 observations.
+
+---
+
+# 2. Baseline forecasts: mean, naive, seasonal naive
+
+**Motivation**
+
+Good baselines are essential. Mean, naive, and seasonal–naive are trivial to compute but surprisingly hard to beat on some data. They also give you quick sanity checks.
+
+```r
+data %>%
+  model(
+    mean   = MEAN(y),
+    naive  = NAIVE(y),
+    snaive = SNAIVE(y)
+  ) %>%
+  forecast(h = "30 days")
+```
+
+Each model returns a fable; you can bind, plot, and calculate accuracy with the same tools.
+
+---
+
+# 3. ARIMA
+
+**Motivation**
+
+ARIMA (and seasonal ARIMA) is still a workhorse model, especially when you want a univariate, interpretable, statistically principled baseline.
+
+```r
+fit_arima <- data %>%
+  model(arima = ARIMA(y))
+
+report(fit_arima)
+fit_arima %>% forecast(h = "30 days")
+```
+
+`ARIMA()` automatically identifies appropriate orders (including seasonal). `report()` gives you parameter estimates and diagnostics.
+
+---
+
+# 4. ETS (Exponential Smoothing)
+
+**Motivation**
+
+ETS models handle level, trend, and seasonality with explicit error formulations. They are robust and often perform very well on business series.
+
+```r
+fit_ets <- data %>%
+  model(ets = ETS(y))
+
+fit_ets %>% report()
+fit_ets %>% forecast(h = "30 days")
+```
+
+ETS models are often a strong alternative to ARIMA when seasonal patterns are stable and the noise structure is well described by exponential smoothing.
+
+---
+
+# 5. STL + ETS (decomposition–based forecasting)
+
+**Motivation**
+
+Sometimes you want to separate trend/seasonality from the short–term noise, both for interpretability and modelling flexibility. STL decomposition plus ETS on the seasonally adjusted component is a powerful pattern.
+
+```r
+fit_stl <- data %>%
+  model(
+    stl_ets = decomposition_model(
+      STL(y ~ season(window = 7)),
+      ETS(season_adjust)
+    )
+  )
+
+fit_stl %>%
+  forecast(h = "30 days")
+```
+
+Here STL extracts a weekly seasonal component; ETS models the seasonally adjusted series.
+
+---
+
+# 6. ARIMAX: regression with ARIMA errors
+
+**Motivation**
+
+Most real–world forecasting problems need exogenous drivers: price, promotions, macro variables, events, etc. ARIMAX (regression with ARIMA errors) is the classical tool for this.
+
+```r
+library(dplyr)
+
+data_x <- data %>%
+  mutate(promo = rbinom(n(), 1, 0.1))
+
+fit_arimax <- data_x %>%
+  model(arimax = ARIMA(y ~ promo))
+
+report(fit_arimax)
+
+future_x <- tsibble(
+  date  = seq.Date(max(data$date) + 1, by = "day", length.out = 30),
+  promo = 0,
+  index = date
+)
+
+fit_arimax %>%
+  forecast(new_data = future_x)
+```
+
+- `promo` captures uplift relative to the baseline.
+- The ARIMA error structure accounts for remaining autocorrelation.
+
+You can add more regressors (price, other features) in the same way.
+
+---
+
+# 7. Multiple series with keys
+
+**Motivation**
+
+In retail and operations, you rarely have a single series. You typically have thousands (SKU × store × region). fable’s key semantics let you fit one model per series with identical code.
+
+```r
+data_multi <- tsibble(
+  id   = rep(letters[1:5], each = 730),
+  date = rep(as.Date("2020-01-01") + 0:729, 5),
+  y    = rnorm(5 * 730),
+  key  = id,
+  index = date
+)
+
+fit_multi <- data_multi %>%
+  model(arima = ARIMA(y))
+
+fit_multi %>%
+  forecast(h = "30 days")
+```
+
+Each key (`id`) gets its own ARIMA model. You can still summarise accuracy and forecasts across all keys.
+
+---
+
+# 8. Hierarchies & reconciliation (including MinT)
+
+**Motivation**
+
+Hierarchical and grouped time series (e.g. SKU → brand → category → region → country) require *coherent* forecasts: children should add up to parents. Reconciliation methods adjust a set of base forecasts to satisfy aggregation constraints while staying close to the originals.
+
+## 8.1 Conceptual view
+
+Stack all series at time *t* into a vector **y**ₜ. There exists a summing matrix **S** such that
+
+$$
+\mathbf{y}_t = \mathbf{S} \, \mathbf{b}_t
+$$
+
+where **b**ₜ are the bottom–level series (e.g., SKUs).  
+
+If you fit arbitrary models to each series, you obtain base forecasts $\hat{\mathbf{y}}_h$ that in general are **not coherent**.
+
+Reconciliation finds adjusted forecasts
+
+$$
+\tilde{\mathbf{y}}_h = \mathbf{S} \, \mathbf{P} \, \hat{\mathbf{y}}^{[b]}_h
+$$
+
+such that:
+
+- Coherence holds by construction (aggregation uses **S**).
+- The adjustments are optimal according to some criterion.
+
+MinT (“Minimum Trace”) chooses **P** to minimise the trace of the reconciled error covariance, using an estimate of the base forecast error covariance matrix **W**.
+
+In one common parameterisation:
+
+$$
+\tilde{\mathbf{y}}_h = \mathbf{S} (\mathbf{S}^\top \mathbf{W}^{-1} \mathbf{S})^{-1} \mathbf{S}^\top \mathbf{W}^{-1} \hat{\mathbf{y}}_h
+$$
+
+Intuition:
+
+- Series with **high variance** forecasts get shrunk more towards coherent aggregates.
+- Series whose **errors are highly correlated** with others share information more strongly.
+
+In practice, fable estimates **W** from in–sample residuals and performs this matrix algebra for you.
+
+## 8.2 Using reconciliation in fable
+
+```r
+library(fabletools)
+library(tsibbledata)
+
+tourism <- tourism  # key = (Region, Purpose)
+
+fit <- tourism %>%
+  model(ets = ETS(Trips))
+
+rec <- fit %>%
+  reconcile(
+    bu   = bottom_up(ets),
+    mint = min_trace(ets),
+    mint_shr = min_trace(ets, method = "mint_shrink")
+  )
+
+fc <- rec %>%
+  forecast(h = "3 years")
+```
+
+Guidelines:
+
+- **bottom_up()**: use when bottom–level series are well measured and you care most about them.
+- **min_trace() / mint_shrink**: use when you want balanced accuracy across levels, and when noise at the bottom is substantial.
+
+---
+
+# 9. Rolling–origin evaluation (tscv)
+
+**Motivation**
+
+A single train/test split can be misleading in time series. Rolling–origin (or “time series cross–validation”) repeatedly trains on expanding windows and evaluates a fixed horizon ahead.
+
+```r
+cv <- data %>%
+  stretch_tsibble(.init = 365, .step = 30)
+
+cv_results <- cv %>%
+  model(arima = ARIMA(y)) %>%
+  forecast(h = 30)
+
+accuracy(cv_results, data)
+```
+
+Each row of the stretched tsibble represents one training window; `forecast(h = 30)` produces 30–day–ahead forecasts for that window.
+
+---
+
+# 10. Combining forecasts
+
+**Motivation**
+
+Forecast combinations are cheap and often yield gains over any single model. Even simple averages can be very effective.
+
+```r
+fit <- data %>%
+  model(
+    arima = ARIMA(y),
+    ets   = ETS(y),
+    mean  = MEAN(y)
+  )
+
+combo <- fit %>%
+  mutate(
+    combo = (arima + ets + mean) / 3
+  )
+
+combo %>%
+  forecast(h = "30 days")
+```
+
+You can also use regression–based combinations or more sophisticated weighting schemes via `regress_combination()` in fabletools.

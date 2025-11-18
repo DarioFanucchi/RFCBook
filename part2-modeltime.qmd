@@ -1,0 +1,277 @@
+---
+title: "Part II — Forecasting with modeltime & tidymodels"
+---
+
+# 11. Time series splits & the ML mindset
+
+**Motivation**
+
+Machine–learning–style forecasting treats time series as supervised learning with strong temporal structure. The critical decision is the *evaluation protocol*; you must respect time when you split data.
+
+```r
+library(tidymodels)
+library(modeltime)
+library(timetk)
+
+data <- tibble(
+  date = as.Date("2020-01-01") + 0:729,
+  y    = sin(2*pi*(0:729)/7) + rnorm(730, 0, 0.2)
+)
+
+splits <- time_series_split(
+  data,
+  assess     = 90,
+  cumulative = TRUE
+)
+```
+
+- `training(splits)` gives history up to the cutoff.
+- `testing(splits)` gives the final 90 days for evaluation.
+
+---
+
+# 12. A basic XGBoost forecast
+
+**Motivation**
+
+Gradient–boosted trees (XGBoost, LightGBM, CatBoost) are state of the art in many retail forecasting benchmarks when combined with good feature engineering.
+
+```r
+rec <- recipe(y ~ date, data = training(splits)) %>%
+  step_timeseries_signature(date) %>%
+  step_rm(contains("hour"), contains("minute"), contains("second"), contains("am.pm")) %>%
+  step_normalize(all_numeric_predictors())
+
+xgb_spec <- boost_tree(
+  trees      = 2000,
+  learn_rate = 0.03,
+  tree_depth = 8
+) %>%
+  set_engine("xgboost") %>%
+  set_mode("regression")
+
+wf_xgb <- workflow() %>%
+  add_recipe(rec) %>%
+  add_model(xgb_spec)
+
+fit_xgb <- fit(wf_xgb, training(splits))
+```
+
+Forecast and evaluate:
+
+```r
+xgb_tbl <- modeltime_table(fit_xgb)
+
+xgb_tbl %>%
+  modeltime_calibrate(testing(splits)) %>%
+  modeltime_forecast(
+    new_data    = testing(splits),
+    actual_data = data
+  )
+```
+
+---
+
+# 13. Adding a classical ARIMA baseline
+
+**Motivation**
+
+Even when you believe ML will win, you should verify it beats a decent statistical model.
+
+```r
+fit_arima <- workflow() %>%
+  add_recipe(rec) %>%
+  add_model(
+    arima_reg() %>%
+      set_engine("auto_arima")
+  ) %>%
+  fit(training(splits))
+
+model_tbl <- modeltime_table(
+  fit_xgb,
+  fit_arima
+)
+
+model_tbl %>%
+  modeltime_calibrate(testing(splits)) %>%
+  modeltime_accuracy()
+```
+
+You now have side–by–side accuracy for ML and classical methods.
+
+---
+
+# 14. Exogenous regressors: promos, prices, features
+
+**Motivation**
+
+Machine–learning models handle many regressors naturally. This is key for retail and supply–chain: promotions, prices, macro variables, calendar features, etc.
+
+```r
+set.seed(1)
+
+data_x <- data %>%
+  mutate(
+    promo = rbinom(n(), 1, 0.1),
+    price = runif(n(), 9, 12)
+  )
+
+splits_x <- time_series_split(
+  data_x,
+  assess     = 90,
+  cumulative = TRUE
+)
+
+rec_x <- recipe(y ~ ., data = training(splits_x)) %>%
+  step_timeseries_signature(date) %>%
+  step_rm(contains("hour"), contains("minute"), contains("second"), contains("am.pm")) %>%
+  step_normalize(all_numeric_predictors())
+
+wf_xgb_x <- workflow() %>%
+  add_recipe(rec_x) %>%
+  add_model(xgb_spec)
+
+fit_xgb_x <- fit(wf_xgb_x, training(splits_x))
+```
+
+You can interpret feature importance with packages like `vip`, `DALEX`, or `iml`.
+
+---
+
+# 15. Time–aware hyperparameter tuning
+
+**Motivation**
+
+If you tune XGBoost with random cross–validation, you leak future information. Instead, use time–series CV (rolling origin) for tuning.
+
+```r
+cv_folds <- time_series_cv(
+  data_x,
+  assess     = 90,
+  skip       = 30,
+  cumulative = TRUE
+)
+
+tuned <- tune_grid(
+  wf_xgb_x,
+  resamples = cv_folds,
+  grid      = 20,
+  control   = control_grid(verbose = TRUE)
+)
+
+best <- select_best(tuned, "rmse")
+
+final_wf <- finalize_workflow(wf_xgb_x, best)
+fit_final <- fit(final_wf, data_x)
+```
+
+The tuned workflow can then be used in `modeltime_table()` and productionised.
+
+---
+
+# 16. Ensembles in modeltime
+
+**Motivation**
+
+Ensembling multiple models (ML + classical) often yields robustness and extra accuracy at very low marginal cost.
+
+```r
+model_tbl <- modeltime_table(
+  fit_xgb_x,
+  fit_arima
+)
+
+ensemble <- model_tbl %>%
+  ensemble_average(type = "mean")
+
+ensemble %>%
+  modeltime_calibrate(testing(splits_x)) %>%
+  modeltime_accuracy()
+```
+
+You can also use weighted ensembles or meta–learners via `stacks`.
+
+---
+
+# 17. Global models across many series
+
+**Motivation**
+
+Global models train one model across many series (e.g. SKUs, depots, stores), often outperforming per–series models when data is sparse.
+
+```r
+data_panel <- tibble(
+  sku   = rep(letters[1:20], each = 730),
+  date  = rep(as.Date("2020-01-01") + 0:729, 20),
+  y     = rnorm(20 * 730) + as.numeric(as.factor(sku)) * 0.2,
+  promo = rbinom(20 * 730, 1, 0.1),
+  price = runif(20 * 730, 9, 12)
+)
+
+splits_panel <- time_series_split(
+  data_panel,
+  assess     = 90,
+  cumulative = TRUE
+)
+
+rec_panel <- recipe(y ~ sku + date + promo + price,
+                    data = training(splits_panel)) %>%
+  step_timeseries_signature(date) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+
+wf_global <- workflow() %>%
+  add_recipe(rec_panel) %>%
+  add_model(xgb_spec)
+
+fit_global <- fit(wf_global, training(splits_panel))
+```
+
+This XGBoost model learns patterns shared across SKUs and depots.
+
+---
+
+# 18. Prophet in modeltime
+
+**Motivation**
+
+Prophet is a popular model for business time series with strong seasonal patterns and holiday effects. `modeltime` wraps it in the same interface as your other models.
+
+```r
+library(prophet)
+
+prop_spec <- prophet_reg(
+  seasonality_yearly = TRUE,
+  seasonality_weekly = TRUE,
+  seasonality_daily  = FALSE,
+  changepoint_num    = 25,
+  changepoint_range  = 0.9
+) %>%
+  set_engine("prophet")
+
+rec_prophet <- recipe(y ~ date, data = training(splits))  # Prophet needs date and y
+
+wf_prophet <- workflow() %>%
+  add_recipe(rec_prophet) %>%
+  add_model(prop_spec)
+
+fit_prophet <- fit(wf_prophet, training(splits))
+```
+
+Prophet with extra regressors:
+
+```r
+rec_prophet_x <- recipe(y ~ date + promo + price,
+                        data = training(splits_x)) %>%
+  step_mutate(
+    promo = as.numeric(promo),
+    price = price
+  )
+
+fit_prophet_x <- workflow() %>%
+  add_recipe(rec_prophet_x) %>%
+  add_model(prop_spec) %>%
+  fit(training(splits_x))
+```
+
+Boosted Prophet (`prophet_boost()`) adds a gradient–boosting component on Prophet’s residuals; the interface is analogous, with `set_engine("prophet_xgboost")`.
