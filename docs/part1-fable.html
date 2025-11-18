@@ -294,25 +294,25 @@ Attaching package: 'tsibble'</code></pre>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="fu">as.Date</span>(<span class="st">"2020-01-01"</span>) <span class="sc">+</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">y     =</span> <span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>)<span class="sc">/</span><span class="dv">7</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">730</span>, <span class="dv">0</span>, <span class="fl">0.2</span>), <span class="co"># Sample data with weekly trend</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">y     =</span> <span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>)<span class="sc">/</span><span class="dv">7</span>) <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">729</span>)<span class="sc">/</span><span class="fl">30.5</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">730</span>, <span class="dv">0</span>, <span class="fl">0.2</span>), <span class="co"># Sample data with weekly, monthly trends</span></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> date</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tsibble: 730 x 2 [1D]
-   date             y
-   &lt;date&gt;       &lt;dbl&gt;
- 1 2020-01-01 -0.0317
- 2 2020-01-02  0.815 
- 3 2020-01-03  1.23  
- 4 2020-01-04  0.287 
- 5 2020-01-05 -0.747 
- 6 2020-01-06 -1.13  
- 7 2020-01-07 -0.747 
- 8 2020-01-08  0.0506
- 9 2020-01-09  0.693 
-10 2020-01-10  0.877 
+   date            y
+   &lt;date&gt;      &lt;dbl&gt;
+ 1 2020-01-01 -0.130
+ 2 2020-01-02  0.782
+ 3 2020-01-03  1.26 
+ 4 2020-01-04  0.504
+ 5 2020-01-05 -0.164
+ 6 2020-01-06 -0.744
+ 7 2020-01-07 -0.447
+ 8 2020-01-08  0.560
+ 9 2020-01-09  1.04 
+10 2020-01-10  1.39 
 # ℹ 720 more rows</code></pre>
 </div>
 </div>
@@ -399,15 +399,15 @@ Attaching package: 'tsibble'</code></pre>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_arima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: y 
-Model: ARIMA(0,0,0)(2,1,0)[7] 
+Model: ARIMA(1,0,4)(1,1,0)[7] 
 
 Coefficients:
-         sar1     sar2
-      -0.6770  -0.3259
-s.e.   0.0354   0.0356
+         ar1      ma1     ma2     ma3     ma4     sar1
+      0.8260  -0.3492  0.0939  0.2600  0.1992  -0.3931
+s.e.  0.0306   0.0411  0.0424  0.0518  0.0369   0.0377
 
-sigma^2 estimated as 0.05263:  log likelihood=37.68
-AIC=-69.36   AICc=-69.33   BIC=-55.61</code></pre>
+sigma^2 estimated as 0.09468:  log likelihood=-172.45
+AIC=358.89   AICc=359.05   BIC=390.98</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit_arima <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -463,19 +463,19 @@ AIC=-69.36   AICc=-69.33   BIC=-55.61</code></pre>
 <pre><code>Series: y 
 Model: ETS(A,N,A) 
   Smoothing parameters:
-    alpha = 0.0001000038 
-    gamma = 0.0001001226 
+    alpha = 0.6395463 
+    gamma = 0.0001000038 
 
   Initial states:
-        l[0]       s[0]     s[-1]      s[-2]     s[-3]   s[-4]     s[-5]
- 0.003877553 -0.8112172 -0.954693 -0.4576037 0.4516111 0.99606 0.7604439
+       l[0]       s[0]      s[-1]      s[-2]     s[-3]     s[-4]     s[-5]
+ -0.0114026 -0.7650761 -0.9659091 -0.4599261 0.4344447 0.9743978 0.7655191
       s[-6]
- 0.01539884
+ 0.01654963
 
-  sigma^2:  0.0401
+  sigma^2:  0.0666
 
      AIC     AICc      BIC 
-2476.196 2476.502 2522.127 </code></pre>
+2845.837 2846.143 2891.767 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fit_ets <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"30 days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -656,15 +656,15 @@ Attaching package: 'dplyr'</code></pre>
 <span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_arimax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: y 
-Model: LM w/ ARIMA(0,0,0)(2,1,0)[7] errors 
+Model: LM w/ ARIMA(1,0,4)(1,1,0)[7] errors 
 
 Coefficients:
-         sar1     sar2    promo
-      -0.6769  -0.3260  -0.0019
-s.e.   0.0354   0.0357   0.0272
+         ar1      ma1     ma2     ma3     ma4     sar1   promo
+      0.8283  -0.3495  0.0921  0.2559  0.1965  -0.3927  0.0223
+s.e.  0.0302   0.0410  0.0427  0.0519  0.0367   0.0376  0.0247
 
-sigma^2 estimated as 0.0527:  log likelihood=37.68
-AIC=-67.36   AICc=-67.31   BIC=-49.03</code></pre>
+sigma^2 estimated as 0.09471:  log likelihood=-172.04
+AIC=360.07   AICc=360.27   BIC=396.74</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>future_x <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">date  =</span> <span class="fu">seq.Date</span>(<span class="fu">max</span>(data<span class="sc">$</span>date) <span class="sc">+</span> <span class="dv">1</span>, <span class="at">by =</span> <span class="st">"day"</span>, <span class="at">length.out =</span> <span class="dv">30</span>),</span>
@@ -847,9 +847,9 @@ AIC=-67.36   AICc=-67.31   BIC=-49.03</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 10
-  .model .type      ME  RMSE   MAE   MPE  MAPE  MASE RMSSE    ACF1
-  &lt;chr&gt;  &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
-1 arima  Test  0.00376 0.240 0.189  85.1  143. 0.838 0.854 -0.0996</code></pre>
+  .model .type    ME  RMSE   MAE   MPE  MAPE  MASE RMSSE  ACF1
+  &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 arima  Test  0.532 0.696 0.584 -16.0  238.  1.26  1.27 0.701</code></pre>
 </div>
 </div>
 <p>Each row of the stretched tsibble represents one training window; <code>forecast(h = 30)</code> produces 30–day–ahead forecasts for that window.</p>

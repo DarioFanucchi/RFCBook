@@ -22,7 +22,7 @@ require(ggplot2, quietly = TRUE)
 
 data <- tsibble(
   date  = as.Date("2020-01-01") + 0:729,
-  y     = sin(2*pi*(0:729)/7) + rnorm(730, 0, 0.2), # Sample data with weekly trend
+  y     = sin(2*pi*(0:729)/7) + 0.5*sin(2*pi*(0:729)/30.5) + rnorm(730, 0, 0.2), # Sample data with weekly, monthly trends
   index = date
 )
 

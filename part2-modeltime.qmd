@@ -15,8 +15,8 @@ time_series_split <- timetk::time_series_split
 time_series_cv <- timetk::time_series_cv
 
 data <- tibble::tibble(
-  date = as.Date("2020-01-01") + 0:729,
-  y    = sin(2*pi*(0:729)/7) + rnorm(730, 0, 0.2)
+  date  = as.Date("2020-01-01") + 0:729,
+  y     = sin(2*pi*(0:729)/7) + 2*sin(2*pi*(0:729)/30.5) + sin(2*pi*(0:729)/365) + rnorm(730, 0, 0.2), # Sample data with weekly, monthly, yearly trends
 )
 
 splits <- time_series_split(
