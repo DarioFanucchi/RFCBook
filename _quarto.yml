@@ -9,6 +9,7 @@ book:
   author: "Dario Fanucchi"
   repo-url: https://github.com/DarioFanucchi/RFCBook
   repo-actions: [issue, source]
+  favicon: favicon.svg
   downloads: []
   page-navigation: true
   chapters:

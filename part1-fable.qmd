@@ -12,8 +12,8 @@ The fable ecosystem is built around the `tsibble` class: a tidy time–series st
 
 ```{r}
 
-suppressWarnings(require(generics, quietly = TRUE))
-suppressWarnings(require(tsibble, quietly = TRUE))
+suppressPackageStartupMessages(library(generics))
+suppressPackageStartupMessages(library(tsibble))
 require(feasts, quietly = TRUE)
 require(fable, quietly = TRUE)
 require(fabletools, quietly = TRUE)
