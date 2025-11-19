@@ -52,12 +52,14 @@ Weekly pulses sit on top of a slower monthly undulation—use the plot to confir
 Good baselines are essential. Mean, naive, and seasonal–naive are trivial to compute but surprisingly hard to beat on some data. They also give you quick sanity checks.
 
 ```{r}
-baseline_fc <- data %>%
+baseline_fit <- data %>%
   model(
     mean   = MEAN(y),
     naive  = NAIVE(y),
     snaive = SNAIVE(y)
-  ) %>%
+  )
+
+baseline_fc <- baseline_fit %>%
   forecast(h = "30 days")
 
 baseline_fc
@@ -78,7 +80,7 @@ baseline_fc %>%
 The naive and seasonal–naive tracks hug the recent history while the simple mean quickly flattens—if even these baselines miss badly, you know the issue sits with the data rather than your fancy model.
 
 ```{r}
-baseline_metrics <- accuracy(baseline_fc, data)
+baseline_metrics <- accuracy(baseline_fit)
 
 baseline_metrics %>%
   select(.model, RMSE, MAE, MASE) %>%
